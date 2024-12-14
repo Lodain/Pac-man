@@ -8,6 +8,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -18,6 +19,10 @@ import pacman.entities.LevelReader;
 public class App extends Application {
 
     private static final int TILE_SIZE = 40; // Size of each tile in pixels
+    private int playerRow, playerCol;
+    private String playerDirection = "RIGHT"; // Initial direction
+    private char[][] levelData=null;
+    private String levelName=null;
 
     @Override
     public void start(Stage primaryStage) {
@@ -73,7 +78,12 @@ public class App extends Application {
     private void loadLevel(Stage primaryStage, String levelFileName) {
         // Read the level file and create the game board
         LevelReader levelReader = new LevelReader();
-        char[][] levelData = levelReader.readLevelData(levelFileName);
+        if (levelName == null) {
+            levelName = levelFileName;
+        }
+        if (levelData == null) {
+            levelData = levelReader.readLevelData(levelName);
+        }
 
         // Load the wall, gate, key, point, and player images
         Image wallImage = new Image(getClass().getResource("/pacman/images/wall.png").toExternalForm());
@@ -122,6 +132,8 @@ public class App extends Application {
                         gridPane.add(pointView, col, row);
                         break;
                     case 'P': // Player
+                        playerRow = row;
+                        playerCol = col;
                         ImageView playerView = new ImageView(playerImage);
                         playerView.setFitWidth(TILE_SIZE);
                         playerView.setFitHeight(TILE_SIZE);
@@ -146,7 +158,54 @@ public class App extends Application {
         Scene gameScene = new Scene(gridPane, 700, 700);
         gameScene.getStylesheets().add(getClass().getResource("/pacman/style/startScreen.css").toExternalForm());
 
+        // Handle keyboard input for player movement
+        gameScene.setOnKeyPressed(event -> {
+            if (event.getCode() == KeyCode.UP) {
+                playerDirection = "UP";
+            } else if (event.getCode() == KeyCode.DOWN) {
+                playerDirection = "DOWN";
+            } else if (event.getCode() == KeyCode.LEFT) {
+                playerDirection = "LEFT";
+            } else if (event.getCode() == KeyCode.RIGHT) {
+                playerDirection = "RIGHT";
+            }
+            movePlayer(gridPane, levelData);
+        });
+
         primaryStage.setScene(gameScene);
+    }
+
+    private void movePlayer(GridPane gridPane, char[][] levelData) {
+        int newRow = playerRow;
+        int newCol = playerCol;
+
+        switch (playerDirection) {
+            case "UP":
+                newRow--;
+                break;
+            case "DOWN":
+                newRow++;
+                break;
+            case "LEFT":
+                newCol--;
+                break;
+            case "RIGHT":
+                newCol++;
+                break;
+        }
+
+        // Check if the new position is within bounds and not a wall
+        if (newRow >= 0 && newRow < levelData.length && newCol >= 0 && newCol < levelData[0].length && levelData[newRow][newCol] != 'W') {
+            // Update the player's position
+            levelData[playerRow][playerCol] = '.';
+            levelData[newRow][newCol] = 'P';
+            playerRow = newRow;
+            playerCol = newCol;
+
+            // Redraw the grid
+            gridPane.getChildren().clear();
+            loadLevel((Stage) gridPane.getScene().getWindow(), levelName);
+        }
     }
 
     private void handleOptionsButton() {
