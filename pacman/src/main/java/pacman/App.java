@@ -22,8 +22,8 @@ public class App extends Application {
         VBox layout = new VBox(10); // 10 is the spacing between elements
         layout.getChildren().addAll(playButton, optionsButton);
 
-        // Create a scene with the layout
-        Scene scene = new Scene(layout, 400, 300);
+        // Create a scene with the layout and larger dimensions
+        Scene scene = new Scene(layout, 700, 700); // Increased width and height
 
         // Load and apply the CSS file
         scene.getStylesheets().add(getClass().getResource("/pacman/style/startScreen.css").toExternalForm());

@@ -1,5 +1,6 @@
-/* Center the VBox and add padding */
+/* Set the background color of the root layout to black */
 .root {
+    -fx-background-color: black;
     -fx-padding: 20;
     -fx-alignment: center;
     -fx-spacing: 10;
@@ -8,17 +9,21 @@
 /* Style for buttons */
 .button {
     -fx-font-size: 16px;
-    -fx-background-color: #4CAF50; /* Green */
-    -fx-text-fill: white;
+    -fx-background-color: transparent; /* Transparent background */
+    -fx-text-fill: yellow; /* Yellow text */
     -fx-padding: 10 20;
+    /* -fx-border-color: yellow; */ /* Removed border color */
+    /* -fx-border-width: 2; */ /* Removed border width */
     -fx-border-radius: 5;
     -fx-background-radius: 5;
 }
 
 .button:hover {
-    -fx-background-color: #45a049; /* Darker green */
+    -fx-text-fill: #FFD700; /* Darker yellow text on hover */
+    /* -fx-border-color: #FFD700; */ /* Removed border color on hover */
 }
 
 .button:pressed {
-    -fx-background-color: #3e8e41; /* Even darker green */
+    -fx-text-fill: #FFA500; /* Even darker yellow text when pressed */
+    /* -fx-border-color: #FFA500; */ /* Removed border color when pressed */
 }
