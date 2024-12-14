@@ -6,10 +6,17 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class LevelReader {
 
     private static final String LEVELS_DIRECTORY = "src/main/resources/pacman/levels";
+    private static final String[] GHOST_IMAGES = {
+        "/pacman/images/ghosts/red.png",
+        "/pacman/images/ghosts/blue.png",
+        "/pacman/images/ghosts/pink.png",
+        "/pacman/images/ghosts/orange.png"
+    };
 
     public List<String> getAvailableLevels() {
         List<String> levels = new ArrayList<>();
@@ -40,5 +47,11 @@ public class LevelReader {
         }
 
         return levelLines.toArray(new char[0][]);
+    }
+
+    public String getRandomGhostImage() {
+        Random random = new Random();
+        int index = random.nextInt(GHOST_IMAGES.length);
+        return GHOST_IMAGES[index];
     }
 }

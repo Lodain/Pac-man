@@ -75,8 +75,12 @@ public class App extends Application {
         LevelReader levelReader = new LevelReader();
         char[][] levelData = levelReader.readLevelData(levelFileName);
 
-        // Load the wall image
+        // Load the wall, gate, key, point, and player images
         Image wallImage = new Image(getClass().getResource("/pacman/images/wall.png").toExternalForm());
+        Image gateImage = new Image(getClass().getResource("/pacman/images/gate.png").toExternalForm());
+        Image keyImage = new Image(getClass().getResource("/pacman/images/key.png").toExternalForm());
+        Image pointImage = new Image(getClass().getResource("/pacman/images/point.png").toExternalForm());
+        Image playerImage = new Image(getClass().getResource("/pacman/images/pacman-right/1.png").toExternalForm());
 
         // Create a GridPane to represent the game board
         GridPane gridPane = new GridPane();
@@ -90,6 +94,38 @@ public class App extends Application {
                         wallView.setFitWidth(TILE_SIZE);
                         wallView.setFitHeight(TILE_SIZE);
                         gridPane.add(wallView, col, row);
+                        break;
+                    case 'G': // Gate
+                        ImageView gateView = new ImageView(gateImage);
+                        gateView.setFitWidth(TILE_SIZE);
+                        gateView.setFitHeight(TILE_SIZE);
+                        gridPane.add(gateView, col, row);
+                        break;
+                    case 'K': // Key
+                        ImageView keyView = new ImageView(keyImage);
+                        keyView.setFitWidth(TILE_SIZE);
+                        keyView.setFitHeight(TILE_SIZE);
+                        gridPane.add(keyView, col, row);
+                        break;
+                    case 'C': // Ghost
+                        String ghostImagePath = levelReader.getRandomGhostImage();
+                        Image ghostImage = new Image(getClass().getResource(ghostImagePath).toExternalForm());
+                        ImageView ghostView = new ImageView(ghostImage);
+                        ghostView.setFitWidth(TILE_SIZE);
+                        ghostView.setFitHeight(TILE_SIZE);
+                        gridPane.add(ghostView, col, row);
+                        break;
+                    case 'o': // Point
+                        ImageView pointView = new ImageView(pointImage);
+                        pointView.setFitWidth(TILE_SIZE);
+                        pointView.setFitHeight(TILE_SIZE);
+                        gridPane.add(pointView, col, row);
+                        break;
+                    case 'P': // Player
+                        ImageView playerView = new ImageView(playerImage);
+                        playerView.setFitWidth(TILE_SIZE);
+                        playerView.setFitHeight(TILE_SIZE);
+                        gridPane.add(playerView, col, row);
                         break;
                     case '.': // Empty field
                         Rectangle tile = new Rectangle(TILE_SIZE, TILE_SIZE);
