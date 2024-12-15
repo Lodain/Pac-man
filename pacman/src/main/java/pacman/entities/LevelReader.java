@@ -49,7 +49,7 @@ public class LevelReader {
         return levelLines.toArray(new char[0][]);
     }
 
-    public String getRandomGhostImage() {
+    public static String getRandomGhostImage() {
         Random random = new Random();
         int index = random.nextInt(GHOST_IMAGES.length);
         return GHOST_IMAGES[index];

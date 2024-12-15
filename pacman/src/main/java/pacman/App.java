@@ -100,6 +100,8 @@ public class App extends Application {
             Image keyImage = new Image(getClass().getResource("/pacman/images/key.png").toExternalForm());
             Image pointImage = new Image(getClass().getResource("/pacman/images/point.png").toExternalForm());
             Image playerImage = new Image(getClass().getResource("/pacman/images/pacman-right/1.png").toExternalForm());
+            Image ghostImage = new Image(getClass().getResource(LevelReader.getRandomGhostImage()).toExternalForm());
+            
 
             // Create the game board
             for (int row = 0; row < levelData.length; row++) {
@@ -124,6 +126,9 @@ public class App extends Application {
                             playerRow = row;
                             playerCol = col;
                             imageView = new ImageView(playerImage);
+                            break;
+                        case 'C':
+                            imageView = new ImageView(ghostImage);
                             break;
                         case '.':
                             Rectangle emptyTile = new Rectangle(TILE_SIZE, TILE_SIZE);
@@ -224,6 +229,10 @@ public class App extends Application {
                 playerView.setFitHeight(TILE_SIZE);
                 gridPane.add(playerView, playerCol, playerRow);
             }
+            else if (Movement.checkMovement(levelData[newRow][newCol]) == 2) {
+                showGameOver();
+
+            }
         } catch (Exception e) {
             e.printStackTrace();
             System.err.println("Error moving player: " + e.getMessage());
@@ -273,6 +282,45 @@ public class App extends Application {
 
     private void handleOptionsButton() {
         System.out.println("Options button clicked!");
+    }
+
+    private void showGameOver() {
+        // Stop the game
+        isPaused = true;
+        movementTimeline.stop();
+
+        // Create game over menu
+        VBox gameOverMenu = new VBox(10);
+        gameOverMenu.getStyleClass().add("pause-menu"); // Reuse pause menu styling
+
+        Label gameOverLabel = new Label("GAME OVER");
+        gameOverLabel.getStyleClass().add("pause-label"); // Reuse pause label styling
+
+        Button playAgainButton = new Button("Play Again");
+        Button mainMenuButton = new Button("Main Menu");
+
+        playAgainButton.getStyleClass().add("pause-menu-button");
+        mainMenuButton.getStyleClass().add("pause-menu-button");
+
+        gameOverMenu.getChildren().addAll(gameOverLabel, playAgainButton, mainMenuButton);
+
+        // Add menu to the game screen
+        StackPane root = (StackPane) primaryStage.getScene().getRoot();
+        root.getChildren().add(gameOverMenu);
+
+        // Button actions
+        playAgainButton.setOnAction(e -> {
+            root.getChildren().remove(gameOverMenu);
+            isPaused = false;
+            loadLevel(primaryStage); // Reload the current level
+        });
+
+        mainMenuButton.setOnAction(e -> {
+            root.getChildren().remove(gameOverMenu);
+            isPaused = false;
+            stopMovementTimeline();
+            start(primaryStage); // Return to main menu
+        });
     }
 
     public static void main(String[] args) {

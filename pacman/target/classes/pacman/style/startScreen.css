@@ -61,3 +61,10 @@
 .game-grid {
     -fx-alignment: center;
 }
+
+/* Game Over specific styles (optional - if you want different styling from pause menu) */
+.game-over-label {
+    -fx-text-fill: red;
+    -fx-font-size: 32;
+    -fx-font-weight: bold;
+}
