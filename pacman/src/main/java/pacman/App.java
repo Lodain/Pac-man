@@ -194,7 +194,7 @@ public class App extends Application {
 
             // Set up movement timeline
             movementTimeline = new Timeline(
-                new KeyFrame(Duration.seconds(1), event -> movePlayer(gridPane, levelData))
+                new KeyFrame(Duration.seconds(0.5), event -> movePlayer(gridPane, levelData))
             );
             movementTimeline.setCycleCount(Timeline.INDEFINITE);
             movementTimeline.play();
