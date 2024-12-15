@@ -2,6 +2,8 @@ package pacman;
 
 import java.util.List;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -14,6 +16,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import pacman.entities.LevelReader;
 import pacman.entities.Movement;
 
@@ -22,17 +25,21 @@ public class App extends Application {
     private static final int TILE_SIZE = 40; // Size of each tile in pixels
     private int playerRow, playerCol;
     private String playerDirection = "RIGHT"; // Initial direction
-    private char[][] levelData=null;
-    private String levelName=null;  
+    private char[][] levelData = null;
+    private String levelName = null;
+    private GridPane gridPane; // Declare gridPane as a class-level variable
+    private Stage primaryStage; // Declare primaryStage as a class-level variable
 
     @Override
     public void start(Stage primaryStage) {
+        this.primaryStage = primaryStage; // Initialize the class-level primaryStage
+
         // Create buttons
         Button playButton = new Button("Play");
         Button optionsButton = new Button("Options");
 
         // Set button actions
-        playButton.setOnAction(event -> showLevelSelection(primaryStage));
+        playButton.setOnAction(event -> showLevelSelection());
         optionsButton.setOnAction(event -> handleOptionsButton());
 
         // Create a layout and add buttons
@@ -51,7 +58,7 @@ public class App extends Application {
         primaryStage.show();
     }
 
-    private void showLevelSelection(Stage primaryStage) {
+    private void showLevelSelection() {
         LevelReader levelReader = new LevelReader();
         List<String> levels = levelReader.getAvailableLevels();
 
@@ -63,7 +70,7 @@ public class App extends Application {
                 String selectedLevel = levelListView.getSelectionModel().getSelectedItem();
                 if (selectedLevel != null) {
                     levelName = selectedLevel;
-                    loadLevel(primaryStage);
+                    loadLevel();
                 }
             }
         });
@@ -77,7 +84,7 @@ public class App extends Application {
         primaryStage.setScene(levelScene);
     }
 
-    private void loadLevel(Stage primaryStage) {
+    private void loadLevel() {
         // Read the level file and create the game board
         LevelReader levelReader = new LevelReader();
         if (levelData == null) {
@@ -92,7 +99,7 @@ public class App extends Application {
         Image playerImage = new Image(getClass().getResource("/pacman/images/pacman-right/1.png").toExternalForm());
 
         // Create a GridPane to represent the game board
-        GridPane gridPane = new GridPane();
+        gridPane = new GridPane(); // Initialize gridPane here
 
         for (int row = 0; row < levelData.length; row++) {
             for (int col = 0; col < levelData[row].length; col++) {
@@ -157,7 +164,7 @@ public class App extends Application {
         Scene gameScene = new Scene(gridPane, 700, 700);
         gameScene.getStylesheets().add(getClass().getResource("/pacman/style/startScreen.css").toExternalForm());
 
-        // Handle keyboard input for player movement
+        // Handle keyboard input for player direction change
         gameScene.setOnKeyPressed(event -> {
             if (event.getCode() == KeyCode.UP) {
                 playerDirection = "UP";
@@ -168,10 +175,18 @@ public class App extends Application {
             } else if (event.getCode() == KeyCode.RIGHT) {
                 playerDirection = "RIGHT";
             }
-            movePlayer(gridPane, levelData);
         });
 
         primaryStage.setScene(gameScene);
+
+        // Start the automatic player movement
+        startPlayerMovement(gridPane, levelData);
+    }
+
+    private void startPlayerMovement(GridPane gridPane, char[][] levelData) {
+        Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(2), event -> movePlayer(gridPane, levelData)));
+        timeline.setCycleCount(Timeline.INDEFINITE);
+        timeline.play();
     }
 
     private void movePlayer(GridPane gridPane, char[][] levelData) {
@@ -202,7 +217,7 @@ public class App extends Application {
 
             // Redraw the grid
             gridPane.getChildren().clear();
-            loadLevel((Stage) gridPane.getScene().getWindow());
+            loadLevel();
         }
         
         
