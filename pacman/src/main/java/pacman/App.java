@@ -86,6 +86,9 @@ public class App extends Application {
 
     private void loadLevel(Stage primaryStage) {
         try {
+            // Reset game state
+            stopMovementTimeline();
+            
             // Read the level file and create the game board
             LevelReader levelReader = new LevelReader();
             levelData = levelReader.readLevelData(levelName);
@@ -94,14 +97,25 @@ public class App extends Application {
             GridPane gridPane = new GridPane();
             gridPane.getStyleClass().add("game-grid");
 
-            // Load images
-            Image wallImage = new Image(getClass().getResource("/pacman/images/wall.png").toExternalForm());
-            Image gateImage = new Image(getClass().getResource("/pacman/images/gate.png").toExternalForm());
-            Image keyImage = new Image(getClass().getResource("/pacman/images/key.png").toExternalForm());
-            Image pointImage = new Image(getClass().getResource("/pacman/images/point.png").toExternalForm());
-            Image playerImage = new Image(getClass().getResource("/pacman/images/pacman-right/1.png").toExternalForm());
-            Image ghostImage = new Image(getClass().getResource(LevelReader.getRandomGhostImage()).toExternalForm());
-            
+            // Load images with null checks and error handling
+            Image wallImage = null;
+            Image gateImage = null;
+            Image keyImage = null;
+            Image pointImage = null;
+            Image playerImage = null;
+            Image ghostImage = null;
+
+            try {
+                wallImage = new Image(getClass().getResourceAsStream("/pacman/images/wall.png"));
+                gateImage = new Image(getClass().getResourceAsStream("/pacman/images/gate.png"));
+                keyImage = new Image(getClass().getResourceAsStream("/pacman/images/key.png"));
+                pointImage = new Image(getClass().getResourceAsStream("/pacman/images/point.png"));
+                playerImage = new Image(getClass().getResourceAsStream("/pacman/images/pacman-right/1.png"));
+                ghostImage = new Image(getClass().getResource(LevelReader.getRandomGhostImage()).toExternalForm());
+            } catch (Exception e) {
+                System.err.println("Error loading images: " + e.getMessage());
+                return;
+            }
 
             // Create the game board
             for (int row = 0; row < levelData.length; row++) {
@@ -153,7 +167,7 @@ public class App extends Application {
             Scene gameScene = new Scene(root, 700, 700);
             gameScene.getStylesheets().add(getClass().getResource("/pacman/style/startScreen.css").toExternalForm());
 
-            // Handle keyboard input
+            // Set up keyboard handling
             gameScene.setOnKeyPressed(event -> {
                 if (event.getCode() == KeyCode.ESCAPE) {
                     if (isPaused) {
@@ -161,7 +175,9 @@ public class App extends Application {
                         rootPane.getChildren().removeIf(node -> node instanceof VBox && 
                             ((VBox) node).getStyleClass().contains("pause-menu"));
                         isPaused = false;
-                        movementTimeline.play();
+                        if (movementTimeline != null) {
+                            movementTimeline.play();
+                        }
                     } else {
                         showPauseMenu();
                     }
