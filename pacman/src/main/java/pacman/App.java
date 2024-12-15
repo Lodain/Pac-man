@@ -1,6 +1,5 @@
 package pacman;
 
-import java.net.URL;
 import java.util.List;
 
 import javafx.application.Application;
@@ -148,15 +147,6 @@ public class App extends Application {
         gameScene.getStylesheets().add(getClass().getResource("/pacman/style/startScreen.css").toExternalForm());
 
         primaryStage.setScene(gameScene);
-    }
-
-    private Image loadImage(String path) {
-        URL resource = getClass().getResource(path);
-        if (resource == null) {
-            System.err.println("Resource not found: " + path);
-            throw new IllegalArgumentException("Resource not found: " + path);
-        }
-        return new Image(resource.toExternalForm());
     }
 
     private void handleOptionsButton() {
