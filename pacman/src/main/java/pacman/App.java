@@ -15,6 +15,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import pacman.entities.LevelReader;
+import pacman.entities.Movement;
 
 public class App extends Application {
 
@@ -22,7 +23,7 @@ public class App extends Application {
     private int playerRow, playerCol;
     private String playerDirection = "RIGHT"; // Initial direction
     private char[][] levelData=null;
-    private String levelName=null;
+    private String levelName=null;  
 
     @Override
     public void start(Stage primaryStage) {
@@ -61,7 +62,8 @@ public class App extends Application {
             if (event.getClickCount() == 2) { // Double-click to select a level
                 String selectedLevel = levelListView.getSelectionModel().getSelectedItem();
                 if (selectedLevel != null) {
-                    loadLevel(primaryStage, selectedLevel);
+                    levelName = selectedLevel;
+                    loadLevel(primaryStage);
                 }
             }
         });
@@ -75,12 +77,9 @@ public class App extends Application {
         primaryStage.setScene(levelScene);
     }
 
-    private void loadLevel(Stage primaryStage, String levelFileName) {
+    private void loadLevel(Stage primaryStage) {
         // Read the level file and create the game board
         LevelReader levelReader = new LevelReader();
-        if (levelName == null) {
-            levelName = levelFileName;
-        }
         if (levelData == null) {
             levelData = levelReader.readLevelData(levelName);
         }
@@ -194,9 +193,8 @@ public class App extends Application {
                 break;
         }
 
-        // Check if the new position is within bounds and not a wall
-        if (newRow >= 0 && newRow < levelData.length && newCol >= 0 && newCol < levelData[0].length && levelData[newRow][newCol] != 'W') {
-            // Update the player's position
+        // check if movement is valid
+        if (Movement.checkMovement(levelData[newRow][newCol]) == 1) {
             levelData[playerRow][playerCol] = '.';
             levelData[newRow][newCol] = 'P';
             playerRow = newRow;
@@ -204,8 +202,10 @@ public class App extends Application {
 
             // Redraw the grid
             gridPane.getChildren().clear();
-            loadLevel((Stage) gridPane.getScene().getWindow(), levelName);
+            loadLevel((Stage) gridPane.getScene().getWindow());
         }
+        
+        
     }
 
     private void handleOptionsButton() {
