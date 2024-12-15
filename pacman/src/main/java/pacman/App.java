@@ -24,11 +24,11 @@ import pacman.entities.Movement;
 
 public class App extends Application {
 
-    private static final int TILE_SIZE = 40; // Size of each tile in pixels
+    private static final int TILE_SIZE = 40;
     private int playerRow, playerCol;
-    private String playerDirection = "RIGHT"; // Initial direction
-    private char[][] levelData=null;
-    private String levelName=null;  
+    private String playerDirection = "RIGHT";
+    private char[][] levelData = null;
+    private String levelName = null;  
     private Timeline movementTimeline;
     private Stage primaryStage;
     private boolean isPaused = false;
@@ -45,16 +45,13 @@ public class App extends Application {
         optionsButton.setOnAction(event -> handleOptionsButton());
 
         // Create a layout and add buttons
-        VBox layout = new VBox(10); // 10 is the spacing between elements
+        VBox layout = new VBox(10);
         layout.getChildren().addAll(playButton, optionsButton);
 
         // Create a scene with the layout
         Scene scene = new Scene(layout, 700, 700);
-
-        // Load and apply the CSS file
         scene.getStylesheets().add(getClass().getResource("/pacman/style/startScreen.css").toExternalForm());
 
-        // Set up the stage
         primaryStage.setTitle("Pacman Game");
         primaryStage.setScene(scene);
         primaryStage.show();
@@ -69,7 +66,7 @@ public class App extends Application {
         levelListView.getItems().addAll(levels);
 
         levelListView.setOnMouseClicked(event -> {
-            if (event.getClickCount() == 2) { // Double-click to select a level
+            if (event.getClickCount() == 2) {
                 String selectedLevel = levelListView.getSelectionModel().getSelectedItem();
                 if (selectedLevel != null) {
                     levelName = selectedLevel;
@@ -88,166 +85,149 @@ public class App extends Application {
     }
 
     private void loadLevel(Stage primaryStage) {
-        // Read the level file and create the game board
-        LevelReader levelReader = new LevelReader();
-        if (levelData == null) {
+        try {
+            // Read the level file and create the game board
+            LevelReader levelReader = new LevelReader();
             levelData = levelReader.readLevelData(levelName);
-        }
 
-        // Load the wall, gate, key, point, and player images
-        Image wallImage = new Image(getClass().getResource("/pacman/images/wall.png").toExternalForm());
-        Image gateImage = new Image(getClass().getResource("/pacman/images/gate.png").toExternalForm());
-        Image keyImage = new Image(getClass().getResource("/pacman/images/key.png").toExternalForm());
-        Image pointImage = new Image(getClass().getResource("/pacman/images/point.png").toExternalForm());
-        Image playerImage = new Image(getClass().getResource("/pacman/images/pacman-right/1.png").toExternalForm());
+            // Create a GridPane to represent the game board
+            GridPane gridPane = new GridPane();
+            gridPane.getStyleClass().add("game-grid");
 
-        // Create a GridPane to represent the game board
-        GridPane gridPane = new GridPane();
-        gridPane.getStyleClass().add("game-grid");
+            // Load images
+            Image wallImage = new Image(getClass().getResource("/pacman/images/wall.png").toExternalForm());
+            Image gateImage = new Image(getClass().getResource("/pacman/images/gate.png").toExternalForm());
+            Image keyImage = new Image(getClass().getResource("/pacman/images/key.png").toExternalForm());
+            Image pointImage = new Image(getClass().getResource("/pacman/images/point.png").toExternalForm());
+            Image playerImage = new Image(getClass().getResource("/pacman/images/pacman-right/1.png").toExternalForm());
 
-        for (int row = 0; row < levelData.length; row++) {
-            for (int col = 0; col < levelData[row].length; col++) {
-                char cell = levelData[row][col];
-                switch (cell) {
-                    case 'W': // Wall
-                        ImageView wallView = new ImageView(wallImage);
-                        wallView.setFitWidth(TILE_SIZE);
-                        wallView.setFitHeight(TILE_SIZE);
-                        gridPane.add(wallView, col, row);
-                        break;
-                    case 'G': // Gate
-                        ImageView gateView = new ImageView(gateImage);
-                        gateView.setFitWidth(TILE_SIZE);
-                        gateView.setFitHeight(TILE_SIZE);
-                        gridPane.add(gateView, col, row);
-                        break;
-                    case 'K': // Key
-                        ImageView keyView = new ImageView(keyImage);
-                        keyView.setFitWidth(TILE_SIZE);
-                        keyView.setFitHeight(TILE_SIZE);
-                        gridPane.add(keyView, col, row);
-                        break;
-                    case 'C': // Ghost
-                        String ghostImagePath = levelReader.getRandomGhostImage();
-                        Image ghostImage = new Image(getClass().getResource(ghostImagePath).toExternalForm());
-                        ImageView ghostView = new ImageView(ghostImage);
-                        ghostView.setFitWidth(TILE_SIZE);
-                        ghostView.setFitHeight(TILE_SIZE);
-                        gridPane.add(ghostView, col, row);
-                        break;
-                    case 'o': // Point
-                        ImageView pointView = new ImageView(pointImage);
-                        pointView.setFitWidth(TILE_SIZE);
-                        pointView.setFitHeight(TILE_SIZE);
-                        gridPane.add(pointView, col, row);
-                        break;
-                    case 'P': // Player
-                        playerRow = row;
-                        playerCol = col;
-                        ImageView playerView = new ImageView(playerImage);
-                        playerView.setFitWidth(TILE_SIZE);
-                        playerView.setFitHeight(TILE_SIZE);
-                        gridPane.add(playerView, col, row);
-                        break;
-                    case '.': // Empty field
-                        Rectangle tile = new Rectangle(TILE_SIZE, TILE_SIZE);
-                        tile.setFill(Color.BLACK);
-                        gridPane.add(tile, col, row);
-                        break;
-                    // Add more cases for other cell types if needed
-                    default:
-                        Rectangle defaultTile = new Rectangle(TILE_SIZE, TILE_SIZE);
-                        defaultTile.setFill(Color.BLACK);
-                        gridPane.add(defaultTile, col, row);
-                        break;
+            // Create the game board
+            for (int row = 0; row < levelData.length; row++) {
+                for (int col = 0; col < levelData[row].length; col++) {
+                    char cell = levelData[row][col];
+                    ImageView imageView = null;
+
+                    switch (cell) {
+                        case 'W':
+                            imageView = new ImageView(wallImage);
+                            break;
+                        case 'G':
+                            imageView = new ImageView(gateImage);
+                            break;
+                        case 'K':
+                            imageView = new ImageView(keyImage);
+                            break;
+                        case 'o':
+                            imageView = new ImageView(pointImage);
+                            break;
+                        case 'P':
+                            playerRow = row;
+                            playerCol = col;
+                            imageView = new ImageView(playerImage);
+                            break;
+                        case '.':
+                            Rectangle emptyTile = new Rectangle(TILE_SIZE, TILE_SIZE);
+                            emptyTile.setFill(Color.BLACK);
+                            gridPane.add(emptyTile, col, row);
+                            continue;
+                    }
+
+                    if (imageView != null) {
+                        imageView.setFitWidth(TILE_SIZE);
+                        imageView.setFitHeight(TILE_SIZE);
+                        gridPane.add(imageView, col, row);
+                    }
                 }
             }
-        }
 
-        // Wrap the GridPane in a StackPane
-        StackPane root = new StackPane(gridPane);
-        root.getStyleClass().add("game-root");
-        
-        Scene gameScene = new Scene(root, 700, 700);
-        gameScene.getStylesheets().add(getClass().getResource("/pacman/style/startScreen.css").toExternalForm());
+            // Create root container
+            StackPane root = new StackPane(gridPane);
+            root.getStyleClass().add("game-root");
 
-        // Handle keyboard input for player direction changes
-        gameScene.setOnKeyPressed(event -> {
-            if (event.getCode() == KeyCode.ESCAPE) {
-                if (!isPaused) {
-                    showPauseMenu();
+            // Create scene
+            Scene gameScene = new Scene(root, 700, 700);
+            gameScene.getStylesheets().add(getClass().getResource("/pacman/style/startScreen.css").toExternalForm());
+
+            // Handle keyboard input
+            gameScene.setOnKeyPressed(event -> {
+                if (event.getCode() == KeyCode.ESCAPE) {
+                    if (isPaused) {
+                        StackPane rootPane = (StackPane) primaryStage.getScene().getRoot();
+                        rootPane.getChildren().removeIf(node -> node instanceof VBox && 
+                            ((VBox) node).getStyleClass().contains("pause-menu"));
+                        isPaused = false;
+                        movementTimeline.play();
+                    } else {
+                        showPauseMenu();
+                    }
+                } else if (!isPaused) {
+                    switch (event.getCode()) {
+                        case UP: playerDirection = "UP"; break;
+                        case DOWN: playerDirection = "DOWN"; break;
+                        case LEFT: playerDirection = "LEFT"; break;
+                        case RIGHT: playerDirection = "RIGHT"; break;
+                        default: break;
+                    }
                 }
-            } else if (event.getCode() == KeyCode.UP) {
-                playerDirection = "UP";
-            } else if (event.getCode() == KeyCode.DOWN) {
-                playerDirection = "DOWN";
-            } else if (event.getCode() == KeyCode.LEFT) {
-                playerDirection = "LEFT";
-            } else if (event.getCode() == KeyCode.RIGHT) {
-                playerDirection = "RIGHT";
-            }
-        });
+            });
 
-        // Create and start the automatic movement timeline
-        movementTimeline = new Timeline(
-            new KeyFrame(Duration.seconds(0.5), event -> movePlayer(gridPane, levelData))
-        );
-        movementTimeline.setCycleCount(Timeline.INDEFINITE);
-        movementTimeline.play();
+            // Set up movement timeline
+            movementTimeline = new Timeline(
+                new KeyFrame(Duration.seconds(1), event -> movePlayer(gridPane, levelData))
+            );
+            movementTimeline.setCycleCount(Timeline.INDEFINITE);
+            movementTimeline.play();
 
-        primaryStage.setScene(gameScene);
+            // Set the scene
+            primaryStage.setScene(gameScene);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.err.println("Error loading level: " + e.getMessage());
+        }
     }
 
     private void movePlayer(GridPane gridPane, char[][] levelData) {
-        int newRow = playerRow;
-        int newCol = playerCol;
+        try {
+            int newRow = playerRow;
+            int newCol = playerCol;
 
-        switch (playerDirection) {
-            case "UP":
-                newRow--;
-                break;
-            case "DOWN":
-                newRow++;
-                break;
-            case "LEFT":
-                newCol--;
-                break;
-            case "RIGHT":
-                newCol++;
-                break;
+            switch (playerDirection) {
+                case "UP": newRow--; break;
+                case "DOWN": newRow++; break;
+                case "LEFT": newCol--; break;
+                case "RIGHT": newCol++; break;
+            }
+
+            if (Movement.checkMovement(levelData[newRow][newCol]) == 1) {
+                // Clear old position
+                gridPane.getChildren().removeIf(node -> 
+                    GridPane.getRowIndex(node) == playerRow && 
+                    GridPane.getColumnIndex(node) == playerCol);
+
+                // Add empty space at old position
+                Rectangle emptyTile = new Rectangle(TILE_SIZE, TILE_SIZE);
+                emptyTile.setFill(Color.BLACK);
+                gridPane.add(emptyTile, playerCol, playerRow);
+
+                // Update player position
+                levelData[playerRow][playerCol] = '.';
+                levelData[newRow][newCol] = 'P';
+                playerRow = newRow;
+                playerCol = newCol;
+
+                // Add player at new position
+                Image playerImage = new Image(getClass().getResource("/pacman/images/pacman-" + 
+                                           playerDirection.toLowerCase() + "/1.png").toExternalForm());
+                ImageView playerView = new ImageView(playerImage);
+                playerView.setFitWidth(TILE_SIZE);
+                playerView.setFitHeight(TILE_SIZE);
+                gridPane.add(playerView, playerCol, playerRow);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.err.println("Error moving player: " + e.getMessage());
         }
-
-        // check if movement is valid
-        if (Movement.checkMovement(levelData[newRow][newCol]) == 1) {
-            // Clear old position
-            gridPane.getChildren().removeIf(node -> GridPane.getRowIndex(node) == playerRow && 
-                                                  GridPane.getColumnIndex(node) == playerCol);
-            
-            // Add empty space at old position
-            Rectangle emptyTile = new Rectangle(TILE_SIZE, TILE_SIZE);
-            emptyTile.setFill(Color.BLACK);
-            gridPane.add(emptyTile, playerCol, playerRow);
-            
-            // Update player position
-            levelData[playerRow][playerCol] = '.';
-            levelData[newRow][newCol] = 'P';
-            playerRow = newRow;
-            playerCol = newCol;
-
-            // Add player at new position
-            Image playerImage = new Image(getClass().getResource("/pacman/images/pacman-" + 
-                                       playerDirection.toLowerCase() + "/1.png").toExternalForm());
-            ImageView playerView = new ImageView(playerImage);
-            playerView.setFitWidth(TILE_SIZE);
-            playerView.setFitHeight(TILE_SIZE);
-            gridPane.add(playerView, playerCol, playerRow);
-        }
-    }
-
-    private void handleOptionsButton() {
-        // Logic to open options menu
-        System.out.println("Options button clicked!");
-        // Transition to the options scene
     }
 
     private void stopMovementTimeline() {
@@ -258,9 +238,8 @@ public class App extends Application {
 
     private void showPauseMenu() {
         isPaused = true;
-        movementTimeline.pause(); // Pause the game
+        movementTimeline.pause();
 
-        // Create pause menu components
         VBox pauseMenu = new VBox(10);
         pauseMenu.getStyleClass().add("pause-menu");
 
@@ -270,17 +249,14 @@ public class App extends Application {
         Button resumeButton = new Button("Resume");
         Button mainMenuButton = new Button("Main Menu");
 
-        // Add style class to buttons
         resumeButton.getStyleClass().add("pause-menu-button");
         mainMenuButton.getStyleClass().add("pause-menu-button");
 
         pauseMenu.getChildren().addAll(pauseLabel, resumeButton, mainMenuButton);
 
-        // Create a stack pane to overlay the pause menu on the game
         StackPane root = (StackPane) primaryStage.getScene().getRoot();
         root.getChildren().add(pauseMenu);
 
-        // Button actions
         resumeButton.setOnAction(e -> {
             root.getChildren().remove(pauseMenu);
             isPaused = false;
@@ -291,8 +267,12 @@ public class App extends Application {
             root.getChildren().remove(pauseMenu);
             isPaused = false;
             stopMovementTimeline();
-            start(primaryStage); // Return to main menu
+            start(primaryStage);
         });
+    }
+
+    private void handleOptionsButton() {
+        System.out.println("Options button clicked!");
     }
 
     public static void main(String[] args) {
