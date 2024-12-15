@@ -2,6 +2,7 @@ package pacman;
 
 import java.util.List;
 
+import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -16,6 +17,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import pacman.entities.LevelReader;
 import pacman.entities.Movement;
+import pacman.entities.Player;
 
 public class App extends Application {
 
@@ -24,9 +26,14 @@ public class App extends Application {
     private String playerDirection = "RIGHT"; // Initial direction
     private char[][] levelData=null;
     private String levelName=null;  
+    private Timeline playerMovementTimeline;
+    private Stage primaryStage;
+    private Player player;
 
     @Override
     public void start(Stage primaryStage) {
+        this.primaryStage = primaryStage;
+
         // Create buttons
         Button playButton = new Button("Play");
         Button optionsButton = new Button("Options");
@@ -49,7 +56,11 @@ public class App extends Application {
         primaryStage.setTitle("Pacman Game");
         primaryStage.setScene(scene);
         primaryStage.show();
+
+        // Initialize the player
+        player = new Player(playerRow, playerCol);
     }
+
 
     private void showLevelSelection(Stage primaryStage) {
         LevelReader levelReader = new LevelReader();
@@ -193,7 +204,7 @@ public class App extends Application {
                 break;
         }
 
-        // check if movement is valid
+        // Check if movement is valid
         if (Movement.checkMovement(levelData[newRow][newCol]) == 1) {
             levelData[playerRow][playerCol] = '.';
             levelData[newRow][newCol] = 'P';
@@ -203,8 +214,8 @@ public class App extends Application {
             // Redraw the grid
             gridPane.getChildren().clear();
             loadLevel((Stage) gridPane.getScene().getWindow());
+            
         }
-        
         
     }
 
