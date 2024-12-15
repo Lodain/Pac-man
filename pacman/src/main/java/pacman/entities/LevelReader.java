@@ -51,7 +51,7 @@ public class LevelReader {
 
     public String getRandomGhostImage() {
         Random random = new Random();
-        int index = random.nextInt(GHOST_IMAGES.length);
+        int index = random.nextInt(4);
         return GHOST_IMAGES[index];
     }
 }
