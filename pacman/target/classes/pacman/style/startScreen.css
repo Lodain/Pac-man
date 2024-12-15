@@ -27,3 +27,37 @@
     -fx-text-fill: #FFA500; /* Even darker yellow text when pressed */
     /* -fx-border-color: #FFA500; */ /* Removed border color when pressed */
 }
+
+/* New pause menu styles */
+.pause-menu {
+    -fx-background-color: rgba(0, 0, 0, 0.8);
+    -fx-padding: 20;
+    -fx-alignment: center;
+    -fx-spacing: 10;
+}
+
+.pause-menu-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: yellow;
+    -fx-border-color: yellow;
+    -fx-border-width: 2;
+    -fx-font-size: 16;
+}
+
+.pause-menu-button:hover {
+    -fx-text-fill: #FFD700;
+}
+
+.pause-label {
+    -fx-text-fill: yellow;
+    -fx-font-size: 24;
+}
+
+/* Add these styles for game grid centering */
+.game-root {
+    -fx-alignment: center;
+}
+
+.game-grid {
+    -fx-alignment: center;
+}

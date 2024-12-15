@@ -7,11 +7,13 @@ import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -28,9 +30,12 @@ public class App extends Application {
     private char[][] levelData=null;
     private String levelName=null;  
     private Timeline movementTimeline;
+    private Stage primaryStage;
+    private boolean isPaused = false;
 
     @Override
     public void start(Stage primaryStage) {
+        this.primaryStage = primaryStage;
         // Create buttons
         Button playButton = new Button("Play");
         Button optionsButton = new Button("Options");
@@ -98,6 +103,7 @@ public class App extends Application {
 
         // Create a GridPane to represent the game board
         GridPane gridPane = new GridPane();
+        gridPane.getStyleClass().add("game-grid");
 
         for (int row = 0; row < levelData.length; row++) {
             for (int col = 0; col < levelData[row].length; col++) {
@@ -158,13 +164,20 @@ public class App extends Application {
             }
         }
 
-        // Create a new scene to display the level
-        Scene gameScene = new Scene(gridPane, 700, 700);
+        // Wrap the GridPane in a StackPane
+        StackPane root = new StackPane(gridPane);
+        root.getStyleClass().add("game-root");
+        
+        Scene gameScene = new Scene(root, 700, 700);
         gameScene.getStylesheets().add(getClass().getResource("/pacman/style/startScreen.css").toExternalForm());
 
         // Handle keyboard input for player direction changes
         gameScene.setOnKeyPressed(event -> {
-            if (event.getCode() == KeyCode.UP) {
+            if (event.getCode() == KeyCode.ESCAPE) {
+                if (!isPaused) {
+                    showPauseMenu();
+                }
+            } else if (event.getCode() == KeyCode.UP) {
                 playerDirection = "UP";
             } else if (event.getCode() == KeyCode.DOWN) {
                 playerDirection = "DOWN";
@@ -214,7 +227,7 @@ public class App extends Application {
             Rectangle emptyTile = new Rectangle(TILE_SIZE, TILE_SIZE);
             emptyTile.setFill(Color.BLACK);
             gridPane.add(emptyTile, playerCol, playerRow);
-
+            
             // Update player position
             levelData[playerRow][playerCol] = '.';
             levelData[newRow][newCol] = 'P';
@@ -241,6 +254,45 @@ public class App extends Application {
         if (movementTimeline != null) {
             movementTimeline.stop();
         }
+    }
+
+    private void showPauseMenu() {
+        isPaused = true;
+        movementTimeline.pause(); // Pause the game
+
+        // Create pause menu components
+        VBox pauseMenu = new VBox(10);
+        pauseMenu.getStyleClass().add("pause-menu");
+
+        Label pauseLabel = new Label("PAUSED");
+        pauseLabel.getStyleClass().add("pause-label");
+
+        Button resumeButton = new Button("Resume");
+        Button mainMenuButton = new Button("Main Menu");
+
+        // Add style class to buttons
+        resumeButton.getStyleClass().add("pause-menu-button");
+        mainMenuButton.getStyleClass().add("pause-menu-button");
+
+        pauseMenu.getChildren().addAll(pauseLabel, resumeButton, mainMenuButton);
+
+        // Create a stack pane to overlay the pause menu on the game
+        StackPane root = (StackPane) primaryStage.getScene().getRoot();
+        root.getChildren().add(pauseMenu);
+
+        // Button actions
+        resumeButton.setOnAction(e -> {
+            root.getChildren().remove(pauseMenu);
+            isPaused = false;
+            movementTimeline.play();
+        });
+
+        mainMenuButton.setOnAction(e -> {
+            root.getChildren().remove(pauseMenu);
+            isPaused = false;
+            stopMovementTimeline();
+            start(primaryStage); // Return to main menu
+        });
     }
 
     public static void main(String[] args) {
