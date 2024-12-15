@@ -2,6 +2,8 @@ package pacman;
 
 import java.util.List;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -14,6 +16,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import pacman.entities.LevelReader;
 import pacman.entities.Movement;
 
@@ -24,6 +27,7 @@ public class App extends Application {
     private String playerDirection = "RIGHT"; // Initial direction
     private char[][] levelData=null;
     private String levelName=null;  
+    private Timeline movementTimeline;
 
     @Override
     public void start(Stage primaryStage) {
@@ -52,6 +56,7 @@ public class App extends Application {
     }
 
     private void showLevelSelection(Stage primaryStage) {
+        stopMovementTimeline();
         LevelReader levelReader = new LevelReader();
         List<String> levels = levelReader.getAvailableLevels();
 
@@ -157,7 +162,7 @@ public class App extends Application {
         Scene gameScene = new Scene(gridPane, 700, 700);
         gameScene.getStylesheets().add(getClass().getResource("/pacman/style/startScreen.css").toExternalForm());
 
-        // Handle keyboard input for player movement
+        // Handle keyboard input for player direction changes
         gameScene.setOnKeyPressed(event -> {
             if (event.getCode() == KeyCode.UP) {
                 playerDirection = "UP";
@@ -168,8 +173,14 @@ public class App extends Application {
             } else if (event.getCode() == KeyCode.RIGHT) {
                 playerDirection = "RIGHT";
             }
-            movePlayer(gridPane, levelData);
         });
+
+        // Create and start the automatic movement timeline
+        movementTimeline = new Timeline(
+            new KeyFrame(Duration.seconds(0.5), event -> movePlayer(gridPane, levelData))
+        );
+        movementTimeline.setCycleCount(Timeline.INDEFINITE);
+        movementTimeline.play();
 
         primaryStage.setScene(gameScene);
     }
@@ -195,23 +206,41 @@ public class App extends Application {
 
         // check if movement is valid
         if (Movement.checkMovement(levelData[newRow][newCol]) == 1) {
+            // Clear old position
+            gridPane.getChildren().removeIf(node -> GridPane.getRowIndex(node) == playerRow && 
+                                                  GridPane.getColumnIndex(node) == playerCol);
+            
+            // Add empty space at old position
+            Rectangle emptyTile = new Rectangle(TILE_SIZE, TILE_SIZE);
+            emptyTile.setFill(Color.BLACK);
+            gridPane.add(emptyTile, playerCol, playerRow);
+
+            // Update player position
             levelData[playerRow][playerCol] = '.';
             levelData[newRow][newCol] = 'P';
             playerRow = newRow;
             playerCol = newCol;
 
-            // Redraw the grid
-            gridPane.getChildren().clear();
-            loadLevel((Stage) gridPane.getScene().getWindow());
+            // Add player at new position
+            Image playerImage = new Image(getClass().getResource("/pacman/images/pacman-" + 
+                                       playerDirection.toLowerCase() + "/1.png").toExternalForm());
+            ImageView playerView = new ImageView(playerImage);
+            playerView.setFitWidth(TILE_SIZE);
+            playerView.setFitHeight(TILE_SIZE);
+            gridPane.add(playerView, playerCol, playerRow);
         }
-        
-        
     }
 
     private void handleOptionsButton() {
         // Logic to open options menu
         System.out.println("Options button clicked!");
         // Transition to the options scene
+    }
+
+    private void stopMovementTimeline() {
+        if (movementTimeline != null) {
+            movementTimeline.stop();
+        }
     }
 
     public static void main(String[] args) {
