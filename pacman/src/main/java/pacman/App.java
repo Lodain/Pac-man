@@ -31,8 +31,11 @@ public class App extends Application {
     private char[][] levelData = null;
     private String levelName = null;  
     private Timeline movementTimeline;
+    private Timeline mouthAnimationTimeline;
     private Stage primaryStage;
     private boolean isPaused = false;
+    private int pacmanImageCounter = 1;
+    private double speed = 0.3;
 
     @Override
     public void start(Stage primaryStage) {
@@ -190,6 +193,7 @@ public class App extends Application {
                         if (movementTimeline != null) {
                             movementTimeline.play();
                         }
+                        startMouthAnimation(gridPane);
                     } else {
                         showPauseMenu();
                     }
@@ -230,10 +234,12 @@ public class App extends Application {
 
             // Set up movement timeline
             movementTimeline = new Timeline(
-                new KeyFrame(Duration.seconds(0.5), event -> movePlayer(gridPane, levelData))
+                new KeyFrame(Duration.seconds(speed), event -> movePlayer(gridPane, levelData))
             );
             movementTimeline.setCycleCount(Timeline.INDEFINITE);
             movementTimeline.play();
+
+            startMouthAnimation(gridPane);
 
             // Set the scene
             primaryStage.setScene(gameScene);
@@ -275,7 +281,7 @@ public class App extends Application {
 
                 // Add player at new position
                 Image playerImage = new Image(getClass().getResource("/pacman/images/pacman-" + 
-                                           playerDirection.toLowerCase() + "/1.png").toExternalForm());
+                                           playerDirection.toLowerCase() + "/" + pacmanImageCounter + ".png").toExternalForm());
                 ImageView playerView = new ImageView(playerImage);
                 playerView.setFitWidth(TILE_SIZE);
                 playerView.setFitHeight(TILE_SIZE);
@@ -294,11 +300,15 @@ public class App extends Application {
         if (movementTimeline != null) {
             movementTimeline.stop();
         }
+        if (mouthAnimationTimeline != null) {
+            mouthAnimationTimeline.stop();
+        }
     }
 
     private void showPauseMenu() {
         isPaused = true;
         movementTimeline.pause();
+        mouthAnimationTimeline.pause();
 
         VBox pauseMenu = new VBox(10);
         pauseMenu.getStyleClass().add("pause-menu");
@@ -321,6 +331,7 @@ public class App extends Application {
             root.getChildren().remove(pauseMenu);
             isPaused = false;
             movementTimeline.play();
+            mouthAnimationTimeline.play();
         });
 
         mainMenuButton.setOnAction(e -> {
@@ -382,11 +393,22 @@ public class App extends Application {
 
         // Add new player image with updated direction
         Image playerImage = new Image(getClass().getResource("/pacman/images/pacman-" + 
-                                   playerDirection.toLowerCase() + "/1.png").toExternalForm());
+                                   playerDirection.toLowerCase() + "/" + pacmanImageCounter + ".png").toExternalForm());
         ImageView playerView = new ImageView(playerImage);
         playerView.setFitWidth(TILE_SIZE);
         playerView.setFitHeight(TILE_SIZE);
         gridPane.add(playerView, playerCol, playerRow);
+    }
+
+    private void startMouthAnimation(GridPane gridPane) {
+        mouthAnimationTimeline = new Timeline(
+            new KeyFrame(Duration.millis(100), event -> {
+                pacmanImageCounter = (pacmanImageCounter % 3) + 1;
+                updatePlayerTexture(gridPane);
+            })
+        );
+        mouthAnimationTimeline.setCycleCount(Timeline.INDEFINITE);
+        mouthAnimationTimeline.play();
     }
 
     public static void main(String[] args) {
