@@ -1,6 +1,7 @@
 package pacman;
 
 import java.util.List;
+import java.util.Random;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -103,7 +104,10 @@ public class App extends Application {
             Image keyImage = null;
             Image pointImage = null;
             Image playerImage = null;
-            Image ghostImage = null;
+            Image ghostImage0 = null;
+            Image ghostImage1 = null;
+            Image ghostImage2 = null;
+            Image ghostImage3 = null;
 
             try {
                 wallImage = new Image(getClass().getResourceAsStream("/pacman/images/wall.png"));
@@ -111,7 +115,10 @@ public class App extends Application {
                 keyImage = new Image(getClass().getResourceAsStream("/pacman/images/key.png"));
                 pointImage = new Image(getClass().getResourceAsStream("/pacman/images/point.png"));
                 playerImage = new Image(getClass().getResourceAsStream("/pacman/images/pacman-right/1.png"));
-                ghostImage = new Image(getClass().getResource(LevelReader.getRandomGhostImage()).toExternalForm());
+                ghostImage0 = new Image(getClass().getResourceAsStream("/pacman/images/ghosts/green.png"));
+                ghostImage1 = new Image(getClass().getResourceAsStream("/pacman/images/ghosts/orange.png"));
+                ghostImage2 = new Image(getClass().getResourceAsStream("/pacman/images/ghosts/pink.png"));
+                ghostImage3 = new Image(getClass().getResourceAsStream("/pacman/images/ghosts/red.png"));
             } catch (Exception e) {
                 System.err.println("Error loading images: " + e.getMessage());
                 return;
@@ -142,7 +149,12 @@ public class App extends Application {
                             imageView = new ImageView(playerImage);
                             break;
                         case 'C':
-                            imageView = new ImageView(ghostImage);
+                            switch (new Random().nextInt(4)) {
+                                case 0: imageView = new ImageView(ghostImage0); break;
+                                case 1: imageView = new ImageView(ghostImage1); break;
+                                case 2: imageView = new ImageView(ghostImage2); break;
+                                case 3: imageView = new ImageView(ghostImage3); break;
+                            }
                             break;
                         case '.':
                             Rectangle emptyTile = new Rectangle(TILE_SIZE, TILE_SIZE);
