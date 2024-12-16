@@ -194,12 +194,36 @@ public class App extends Application {
                         showPauseMenu();
                     }
                 } else if (!isPaused) {
+                    boolean directionChanged = false;
                     switch (event.getCode()) {
-                        case UP: playerDirection = "UP"; break;
-                        case DOWN: playerDirection = "DOWN"; break;
-                        case LEFT: playerDirection = "LEFT"; break;
-                        case RIGHT: playerDirection = "RIGHT"; break;
+                        case UP: 
+                            if (!playerDirection.equals("UP")) {
+                                playerDirection = "UP";
+                                directionChanged = true;
+                            }
+                            break;
+                        case DOWN: 
+                            if (!playerDirection.equals("DOWN")) {
+                                playerDirection = "DOWN";
+                                directionChanged = true;
+                            }
+                            break;
+                        case LEFT: 
+                            if (!playerDirection.equals("LEFT")) {
+                                playerDirection = "LEFT";
+                                directionChanged = true;
+                            }
+                            break;
+                        case RIGHT: 
+                            if (!playerDirection.equals("RIGHT")) {
+                                playerDirection = "RIGHT";
+                                directionChanged = true;
+                            }
+                            break;
                         default: break;
+                    }
+                    if (directionChanged) {
+                        updatePlayerTexture(gridPane);
                     }
                 }
             });
@@ -259,7 +283,6 @@ public class App extends Application {
             }
             else if (Movement.checkMovement(levelData[newRow][newCol]) == 2) {
                 showGameOver();
-
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -349,6 +372,21 @@ public class App extends Application {
             stopMovementTimeline();
             start(primaryStage); // Return to main menu
         });
+    }
+
+    private void updatePlayerTexture(GridPane gridPane) {
+        // Remove current player image
+        gridPane.getChildren().removeIf(node -> 
+            GridPane.getRowIndex(node) == playerRow && 
+            GridPane.getColumnIndex(node) == playerCol);
+
+        // Add new player image with updated direction
+        Image playerImage = new Image(getClass().getResource("/pacman/images/pacman-" + 
+                                   playerDirection.toLowerCase() + "/1.png").toExternalForm());
+        ImageView playerView = new ImageView(playerImage);
+        playerView.setFitWidth(TILE_SIZE);
+        playerView.setFitHeight(TILE_SIZE);
+        gridPane.add(playerView, playerCol, playerRow);
     }
 
     public static void main(String[] args) {
