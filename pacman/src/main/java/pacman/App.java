@@ -94,13 +94,20 @@ public class App extends Application {
             // Reset game state
             stopMovementTimeline();
             
-            // Read the level file and create the game board
+            // Read the level file and create the game boards
             LevelReader levelReader = new LevelReader();
             levelData = levelReader.readLevelData(levelName);
+            levelData2 = levelReader.readLevelData(levelName);  // Add second level data
 
-            // Create a GridPane to represent the game board
+            // Create GridPanes to represent the game boards
             GridPane gridPane = new GridPane();
+            GridPane gridPane2 = new GridPane();  // Add second GridPane
             gridPane.getStyleClass().add("game-grid");
+            gridPane2.getStyleClass().add("game-grid");
+
+            // Create a StackPane to overlay the grids
+            StackPane gameBoards = new StackPane();  // Changed from VBox to StackPane
+            gameBoards.getChildren().addAll(gridPane, gridPane2);  // Order matters: last added appears on top
 
             // Load images
             Image wallImage = new Image(getClass().getResourceAsStream("/pacman/images/wall.png"));
@@ -113,54 +120,12 @@ public class App extends Application {
             Image ghostImage2 = new Image(getClass().getResourceAsStream("/pacman/images/ghosts/pink.png"));
             Image ghostImage3 = new Image(getClass().getResourceAsStream("/pacman/images/ghosts/red.png"));
 
-            // Create the game board
-            for (int row = 0; row < levelData.length; row++) {
-                for (int col = 0; col < levelData[row].length; col++) {
-                    char cell = levelData[row][col];
-                    ImageView imageView = null;
-
-                    switch (cell) {
-                        case 'W':
-                            imageView = new ImageView(wallImage);
-                            break;
-                        case 'G':
-                            imageView = new ImageView(gateImage);
-                            break;
-                        case 'K':
-                            imageView = new ImageView(keyImage);
-                            break;
-                        case 'o':
-                            imageView = new ImageView(pointImage);
-                            break;
-                        case 'P':
-                            playerRow = row;
-                            playerCol = col;
-                            imageView = new ImageView(playerImage);
-                            break;
-                        case 'C':
-                            switch (new Random().nextInt(4)) {
-                                case 0: imageView = new ImageView(ghostImage0); break;
-                                case 1: imageView = new ImageView(ghostImage1); break;
-                                case 2: imageView = new ImageView(ghostImage2); break;
-                                case 3: imageView = new ImageView(ghostImage3); break;
-                            }
-                            break;
-                        case '.':
-                            Rectangle emptyTile = new Rectangle(TILE_SIZE, TILE_SIZE);
-                            emptyTile.setFill(Color.BLACK);
-                            gridPane.add(emptyTile, col, row);
-                            continue;
-                    }
-                    if (imageView != null) {
-                        imageView.setFitWidth(TILE_SIZE);
-                        imageView.setFitHeight(TILE_SIZE);
-                        gridPane.add(imageView, col, row);
-                    }
-                }
-            }
+            // Create both game boards
+            createGameBoard(gridPane, levelData, true);  // Add method call for first board
+            createGameBoard(gridPane2, levelData2, false);  // Add method call for second board
 
             // Create root container
-            StackPane root = new StackPane(gridPane);
+            StackPane root = new StackPane(gameBoards);
             root.getStyleClass().add("game-root");
 
             // Create scene
@@ -394,6 +359,60 @@ public class App extends Application {
         );
         mouthAnimationTimeline.setCycleCount(Timeline.INDEFINITE);
         mouthAnimationTimeline.play();
+    }
+
+    // Add new helper method to create game board
+    private void createGameBoard(GridPane gridPane, char[][] data, boolean isMainBoard) {
+        for (int row = 0; row < data.length; row++) {
+            for (int col = 0; col < data[row].length; col++) {
+                char cell = data[row][col];
+                ImageView imageView = null;
+
+                switch (cell) {
+                    case 'W':
+                        imageView = new ImageView(new Image(getClass().getResourceAsStream("/pacman/images/wall.png")));
+                        break;
+                    case 'G':
+                        imageView = new ImageView(new Image(getClass().getResourceAsStream("/pacman/images/gate.png")));
+                        break;
+                    case 'K':
+                        imageView = new ImageView(new Image(getClass().getResourceAsStream("/pacman/images/key.png")));
+                        break;
+                    case 'o':
+                        imageView = new ImageView(new Image(getClass().getResourceAsStream("/pacman/images/point.png")));
+                        break;
+                    case 'P':
+                        if (isMainBoard) {
+                            playerRow = row;
+                            playerCol = col;
+                            imageView = new ImageView(new Image(getClass().getResourceAsStream("/pacman/images/pacman-right/1.png")));
+                        } else {
+                            imageView = new ImageView(new Image(getClass().getResourceAsStream("/pacman/images/empty.png")));
+                        }
+                        break;
+                    case 'C':
+                        Image ghostImage = new Image(getClass().getResourceAsStream("/pacman/images/ghosts/" + 
+                            (new String[]{"green", "orange", "pink", "red"})[new Random().nextInt(4)] + ".png"));
+                        imageView = new ImageView(ghostImage);
+                        break;
+                    case '.':
+                        if (!isMainBoard) {
+                            imageView = new ImageView(new Image(getClass().getResourceAsStream("/pacman/images/empty.png")));
+                        } else {
+                            Rectangle emptyTile = new Rectangle(TILE_SIZE, TILE_SIZE);
+                            emptyTile.setFill(Color.BLACK);
+                            gridPane.add(emptyTile, col, row);
+                            continue;
+                        }
+                        break;
+                }
+                if (imageView != null) {
+                    imageView.setFitWidth(TILE_SIZE);
+                    imageView.setFitHeight(TILE_SIZE);
+                    gridPane.add(imageView, col, row);
+                }
+            }
+        }
     }
 
     public static void main(String[] args) {
