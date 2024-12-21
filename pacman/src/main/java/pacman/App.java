@@ -225,7 +225,10 @@ public class App extends Application {
 
             // Set up movement timeline
             movementTimeline = new Timeline(
-                new KeyFrame(Duration.seconds(speed), event -> movePlayer(gridPane, levelData))
+                new KeyFrame(Duration.seconds(speed), event -> {
+                    movePlayer(gridPane, levelData);
+                    moveGhosts(gridPane, levelData);
+                })
             );
             movementTimeline.setCycleCount(Timeline.INDEFINITE);
             movementTimeline.play();
@@ -420,6 +423,73 @@ public class App extends Application {
         );
         mouthAnimationTimeline.setCycleCount(Timeline.INDEFINITE);
         mouthAnimationTimeline.play();
+    }
+
+    private void moveGhosts(GridPane gridPane, char[][] levelData) {
+        Random random = new Random();
+        for (Ghost ghost : ghosts) {
+            int currentRow = ghost.getRow();
+            int currentCol = ghost.getCol();
+            int newRow = currentRow;
+            int newCol = currentCol;
+
+            // Try to move the ghost in a random direction
+            boolean moved = false;
+            while (!moved) {
+                try {
+                    int direction = random.nextInt(4);
+                    switch (direction) {
+                        case 0: newRow = currentRow - 1; break; // UP
+                        case 1: newRow = currentRow + 1; break; // DOWN
+                        case 2: newCol = currentCol - 1; break; // LEFT
+                        case 3: newCol = currentCol + 1; break; // RIGHT
+                    }
+
+                    // Check if the new position is within bounds and valid
+                    if (newRow >= 0 && newRow < levelData.length && 
+                        newCol >= 0 && newCol < levelData[newRow].length &&
+                        levelData[newRow][newCol] != 'W' && levelData[newRow][newCol] != 'C') {
+                        
+                        System.out.println("Moving ghost from (" + currentRow + ", " + currentCol + ") to (" + newRow + ", " + newCol + ")");
+
+                        // Insert the content of last in the current position
+                        levelData[currentRow][currentCol] = ghost.getLast();
+
+                        // Save the object that is in the square where the ghost wants to move
+                        ghost.setLast(levelData[newRow][newCol]);
+
+                        // Move the ghost
+                        levelData[newRow][newCol] = 'C';
+                        ghost.setRow(newRow);
+                        ghost.setCol(newCol);
+
+                        // Update the gridPane
+                        updateGhostTexture(gridPane, currentRow, currentCol, newRow, newCol);
+                        moved = true;
+                    }
+                } catch (ArrayIndexOutOfBoundsException e) {
+                    System.err.println("Array index out of bounds: " + e.getMessage());
+                    e.printStackTrace();
+                } catch (Exception e) {
+                    System.err.println("Error moving ghost: " + e.getMessage());
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    private void updateGhostTexture(GridPane gridPane, int oldRow, int oldCol, int newRow, int newCol) {
+        // Remove the ghost from the old position
+        gridPane.getChildren().removeIf(node -> 
+            GridPane.getRowIndex(node) == oldRow && 
+            GridPane.getColumnIndex(node) == oldCol);
+
+        // Add the ghost to the new position
+        Image ghostImage = new Image(getClass().getResourceAsStream("/pacman/images/ghosts/green.png")); // Example image
+        ImageView ghostView = new ImageView(ghostImage);
+        ghostView.setFitWidth(TILE_SIZE);
+        ghostView.setFitHeight(TILE_SIZE);
+        gridPane.add(ghostView, newCol, newRow);
     }
 
     public static void main(String[] args) {
