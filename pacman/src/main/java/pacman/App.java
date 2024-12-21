@@ -1,5 +1,6 @@
 package pacman;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -20,6 +21,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import pacman.entities.Ghost;
 import pacman.entities.LevelReader;
 import pacman.entities.Movement;
 
@@ -37,6 +39,7 @@ public class App extends Application {
     private boolean isPaused = false;
     private int pacmanImageCounter = 1;
     private double speed = 0.3;
+    private List<Ghost> ghosts = new ArrayList<>();
 
     @Override
     public void start(Stage primaryStage) {
@@ -93,6 +96,7 @@ public class App extends Application {
         try {
             // Reset game state
             stopMovementTimeline();
+            ghosts.clear(); // Clear any existing ghosts
             
             // Read the level file and create the game board
             LevelReader levelReader = new LevelReader();
@@ -138,6 +142,8 @@ public class App extends Application {
                             imageView = new ImageView(playerImage);
                             break;
                         case 'C':
+                            Ghost ghost = new Ghost(row, col);
+                            ghosts.add(ghost);
                             switch (new Random().nextInt(4)) {
                                 case 0: imageView = new ImageView(ghostImage0); break;
                                 case 1: imageView = new ImageView(ghostImage1); break;
