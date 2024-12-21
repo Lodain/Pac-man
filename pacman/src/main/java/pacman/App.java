@@ -446,14 +446,14 @@ public class App extends Application {
                     }
 
                     // Check if the new position is within bounds and valid
-                    if (newRow >= 0 && newRow < levelData.length && 
-                        newCol >= 0 && newCol < levelData[newRow].length &&
-                        levelData[newRow][newCol] != 'W' && levelData[newRow][newCol] != 'C') {
+                    if (levelData[newRow][newCol] != 'W' && levelData[newRow][newCol] != 'C') {
                         
                         System.out.println("Moving ghost from (" + currentRow + ", " + currentCol + ") to (" + newRow + ", " + newCol + ")");
 
                         // Insert the content of last in the current position
                         levelData[currentRow][currentCol] = ghost.getLast();
+
+
 
                         // Save the object that is in the square where the ghost wants to move
                         ghost.setLast(levelData[newRow][newCol]);
@@ -464,7 +464,8 @@ public class App extends Application {
                         ghost.setCol(newCol);
 
                         // Update the gridPane
-                        updateGhostTexture(gridPane, currentRow, currentCol, newRow, newCol);
+                        updateGhostTexture(gridPane, currentRow, currentCol, newRow, newCol, ghost.getLast());
+
                         moved = true;
                     }
                 } catch (ArrayIndexOutOfBoundsException e) {
@@ -478,11 +479,35 @@ public class App extends Application {
         }
     }
 
-    private void updateGhostTexture(GridPane gridPane, int oldRow, int oldCol, int newRow, int newCol) {
+    private void updateGhostTexture(GridPane gridPane, int oldRow, int oldCol, int newRow, int newCol, char last) {
         // Remove the ghost from the old position
         gridPane.getChildren().removeIf(node -> 
             GridPane.getRowIndex(node) == oldRow && 
             GridPane.getColumnIndex(node) == oldCol);
+
+        // Add the object that was in the ghost's previous position
+        ImageView imageView = null;
+        switch (last) {
+            case 'G':
+                imageView = new ImageView(new Image(getClass().getResourceAsStream("/pacman/images/gate.png")));
+                break;
+            case 'K':
+                imageView = new ImageView(new Image(getClass().getResourceAsStream("/pacman/images/key.png")));
+                break;
+            case 'o':
+                imageView = new ImageView(new Image(getClass().getResourceAsStream("/pacman/images/point.png")));
+                break;
+            case '.':
+                Rectangle emptyTile = new Rectangle(TILE_SIZE, TILE_SIZE);
+                emptyTile.setFill(Color.BLACK);
+                gridPane.add(emptyTile, oldCol, oldRow);
+                break;
+        }
+        if (imageView != null) {
+            imageView.setFitWidth(TILE_SIZE);
+            imageView.setFitHeight(TILE_SIZE);
+            gridPane.add(imageView, oldCol, oldRow);
+        }
 
         // Add the ghost to the new position
         Image ghostImage = new Image(getClass().getResourceAsStream("/pacman/images/ghosts/green.png")); // Example image
