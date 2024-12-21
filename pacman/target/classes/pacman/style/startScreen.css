@@ -60,6 +60,8 @@
 
 .game-grid {
     -fx-alignment: center;
+    -fx-hgap: 0; /* Ensure no horizontal gap */
+    -fx-vgap: 0; /* Ensure no vertical gap */
 }
 
 /* Game Over specific styles (optional - if you want different styling from pause menu) */
@@ -67,4 +69,13 @@
     -fx-text-fill: red;
     -fx-font-size: 32;
     -fx-font-weight: bold;
+}
+
+/* Add a red border to gridPane2 for visibility */
+.grid-pane2 {
+    -fx-border-color: red;
+    -fx-border-width: 2; /* Adjust the width as needed */
+    -fx-border-style: solid;
+    -fx-alignment: center;
+    -fx-background-color: rgba(255, 0, 0, 0.1); /* Temporary background for debugging */
 }

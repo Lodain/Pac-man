@@ -97,10 +97,17 @@ public class App extends Application {
             // Read the level file and create the game board
             LevelReader levelReader = new LevelReader();
             levelData = levelReader.readLevelData(levelName);
+            levelData2 = levelReader.readLevelData(levelName); // Assuming levelData2 is initialized similarly
 
             // Create a GridPane to represent the game board
             GridPane gridPane = new GridPane();
             gridPane.getStyleClass().add("game-grid");
+
+            // Create a second GridPane for levelData2
+            GridPane gridPane2 = new GridPane();
+            gridPane2.getStyleClass().add("game-grid");
+            gridPane2.getStyleClass().add("grid-pane2"); // Add specific style for gridPane2
+            gridPane2.setOpacity(1); // Ensure it's visible
 
             // Load images
             Image wallImage = new Image(getClass().getResourceAsStream("/pacman/images/wall.png"));
@@ -113,7 +120,7 @@ public class App extends Application {
             Image ghostImage2 = new Image(getClass().getResourceAsStream("/pacman/images/ghosts/pink.png"));
             Image ghostImage3 = new Image(getClass().getResourceAsStream("/pacman/images/ghosts/red.png"));
 
-            // Create the game board
+            // Create the game board for levelData
             for (int row = 0; row < levelData.length; row++) {
                 for (int col = 0; col < levelData[row].length; col++) {
                     char cell = levelData[row][col];
@@ -138,13 +145,13 @@ public class App extends Application {
                             imageView = new ImageView(playerImage);
                             break;
                         case 'C':
-                            switch (new Random().nextInt(4)) {
-                                case 0: imageView = new ImageView(ghostImage0); break;
-                                case 1: imageView = new ImageView(ghostImage1); break;
-                                case 2: imageView = new ImageView(ghostImage2); break;
-                                case 3: imageView = new ImageView(ghostImage3); break;
-                            }
-                            break;
+                            // switch (new Random().nextInt(4)) {
+                            //     case 0: imageView = new ImageView(ghostImage0); break;
+                            //     case 1: imageView = new ImageView(ghostImage1); break;
+                            //     case 2: imageView = new ImageView(ghostImage2); break;
+                            //     case 3: imageView = new ImageView(ghostImage3); break;
+                            // }
+                            // break;
                         case '.':
                             Rectangle emptyTile = new Rectangle(TILE_SIZE, TILE_SIZE);
                             emptyTile.setFill(Color.BLACK);
@@ -159,8 +166,31 @@ public class App extends Application {
                 }
             }
 
-            // Create root container
-            StackPane root = new StackPane(gridPane);
+            // Create the second game board for levelData2
+            for (int row = 0; row < levelData2.length; row++) {
+                for (int col = 0; col < levelData2[row].length; col++) {
+                    char cell = levelData2[row][col];
+                    ImageView imageView = null;
+
+                    if (cell == 'C') { // Only show ghosts
+                        switch (new Random().nextInt(4)) {
+                            case 0: imageView = new ImageView(ghostImage0); break;
+                            case 1: imageView = new ImageView(ghostImage1); break;
+                            case 2: imageView = new ImageView(ghostImage2); break;
+                            case 3: imageView = new ImageView(ghostImage3); break;
+                        }
+                    }
+
+                    if (imageView != null) {
+                        imageView.setFitWidth(TILE_SIZE);
+                        imageView.setFitHeight(TILE_SIZE);
+                        gridPane2.add(imageView, col, row);
+                    }
+                }
+            }
+
+            // Create root container with gridPane2 on top of gridPane1
+            StackPane root = new StackPane(gridPane, gridPane2);
             root.getStyleClass().add("game-root");
 
             // Create scene
