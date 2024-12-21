@@ -29,6 +29,7 @@ public class App extends Application {
     private int playerRow, playerCol;
     private String playerDirection = "RIGHT";
     private char[][] levelData = null;
+    private char[][] levelData2 = null;
     private String levelName = null;  
     private Timeline movementTimeline;
     private Timeline mouthAnimationTimeline;
@@ -101,31 +102,16 @@ public class App extends Application {
             GridPane gridPane = new GridPane();
             gridPane.getStyleClass().add("game-grid");
 
-            // Load images with null checks and error handling
-            Image wallImage = null;
-            Image gateImage = null;
-            Image keyImage = null;
-            Image pointImage = null;
-            Image playerImage = null;
-            Image ghostImage0 = null;
-            Image ghostImage1 = null;
-            Image ghostImage2 = null;
-            Image ghostImage3 = null;
-
-            try {
-                wallImage = new Image(getClass().getResourceAsStream("/pacman/images/wall.png"));
-                gateImage = new Image(getClass().getResourceAsStream("/pacman/images/gate.png"));
-                keyImage = new Image(getClass().getResourceAsStream("/pacman/images/key.png"));
-                pointImage = new Image(getClass().getResourceAsStream("/pacman/images/point.png"));
-                playerImage = new Image(getClass().getResourceAsStream("/pacman/images/pacman-right/1.png"));
-                ghostImage0 = new Image(getClass().getResourceAsStream("/pacman/images/ghosts/green.png"));
-                ghostImage1 = new Image(getClass().getResourceAsStream("/pacman/images/ghosts/orange.png"));
-                ghostImage2 = new Image(getClass().getResourceAsStream("/pacman/images/ghosts/pink.png"));
-                ghostImage3 = new Image(getClass().getResourceAsStream("/pacman/images/ghosts/red.png"));
-            } catch (Exception e) {
-                System.err.println("Error loading images: " + e.getMessage());
-                return;
-            }
+            // Load images
+            Image wallImage = new Image(getClass().getResourceAsStream("/pacman/images/wall.png"));
+            Image gateImage = new Image(getClass().getResourceAsStream("/pacman/images/gate.png"));
+            Image keyImage = new Image(getClass().getResourceAsStream("/pacman/images/key.png"));
+            Image pointImage = new Image(getClass().getResourceAsStream("/pacman/images/point.png"));
+            Image playerImage = new Image(getClass().getResourceAsStream("/pacman/images/pacman-right/1.png"));
+            Image ghostImage0 = new Image(getClass().getResourceAsStream("/pacman/images/ghosts/green.png"));
+            Image ghostImage1 = new Image(getClass().getResourceAsStream("/pacman/images/ghosts/orange.png"));
+            Image ghostImage2 = new Image(getClass().getResourceAsStream("/pacman/images/ghosts/pink.png"));
+            Image ghostImage3 = new Image(getClass().getResourceAsStream("/pacman/images/ghosts/red.png"));
 
             // Create the game board
             for (int row = 0; row < levelData.length; row++) {
@@ -165,7 +151,6 @@ public class App extends Application {
                             gridPane.add(emptyTile, col, row);
                             continue;
                     }
-
                     if (imageView != null) {
                         imageView.setFitWidth(TILE_SIZE);
                         imageView.setFitHeight(TILE_SIZE);
