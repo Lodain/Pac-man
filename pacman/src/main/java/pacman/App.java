@@ -323,6 +323,13 @@ public class App extends Application {
             root.getChildren().remove(pauseMenu);
             isPaused = false;
             stopMovementTimeline();
+            // Reset level data
+            levelData = null;
+            playerRow = 0;
+            playerCol = 0;
+            playerDirection = "RIGHT";
+            pacmanImageCounter = 1;
+            // Return to main menu
             start(primaryStage);
         });
     }
@@ -359,6 +366,13 @@ public class App extends Application {
         playAgainButton.setOnAction(e -> {
             root.getChildren().remove(gameOverMenu);
             isPaused = false;
+            stopMovementTimeline();
+            // Reset level data
+            levelData = null;
+            playerRow = 0;
+            playerCol = 0;
+            playerDirection = "RIGHT";
+            pacmanImageCounter = 1;
             loadLevel(primaryStage); // Reload the current level
         });
 
@@ -366,6 +380,12 @@ public class App extends Application {
             root.getChildren().remove(gameOverMenu);
             isPaused = false;
             stopMovementTimeline();
+            // Reset level data
+            levelData = null;
+            playerRow = 0;
+            playerCol = 0;
+            playerDirection = "RIGHT";
+            pacmanImageCounter = 1;
             start(primaryStage); // Return to main menu
         });
     }
