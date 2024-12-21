@@ -40,6 +40,7 @@ public class App extends Application {
     private int pacmanImageCounter = 1;
     private double speed = 0.3;
     private List<Ghost> ghosts = new ArrayList<>();
+    private char[][] ghostGrid = null;
 
     @Override
     public void start(Stage primaryStage) {
@@ -102,9 +103,18 @@ public class App extends Application {
             LevelReader levelReader = new LevelReader();
             levelData = levelReader.readLevelData(levelName);
 
+            // Initialize the ghost grid with the same dimensions as levelData
+            ghostGrid = levelReader.readLevelData(levelName);
+
             // Create a GridPane to represent the game board
             GridPane gridPane = new GridPane();
+            GridPane ghostGridPane = new GridPane();
             gridPane.getStyleClass().add("game-grid");
+            ghostGridPane.getStyleClass().add("game-grid");
+
+            // Set dimensions of ghostGridPane to match gridPane
+            ghostGridPane.setPrefWidth(gridPane.getPrefWidth());
+            ghostGridPane.setPrefHeight(gridPane.getPrefHeight());
 
             // Load images
             Image wallImage = new Image(getClass().getResourceAsStream("/pacman/images/wall.png"));
@@ -116,6 +126,7 @@ public class App extends Application {
             Image ghostImage1 = new Image(getClass().getResourceAsStream("/pacman/images/ghosts/orange.png"));
             Image ghostImage2 = new Image(getClass().getResourceAsStream("/pacman/images/ghosts/pink.png"));
             Image ghostImage3 = new Image(getClass().getResourceAsStream("/pacman/images/ghosts/red.png"));
+            Image emptyImage = new Image(getClass().getResourceAsStream("/pacman/images/empty.png"));
 
             // Create the game board
             for (int row = 0; row < levelData.length; row++) {
@@ -142,15 +153,14 @@ public class App extends Application {
                             imageView = new ImageView(playerImage);
                             break;
                         case 'C':
-                            Ghost ghost = new Ghost(row, col);
-                            ghosts.add(ghost);
-                            switch (new Random().nextInt(4)) {
-                                case 0: imageView = new ImageView(ghostImage0); break;
-                                case 1: imageView = new ImageView(ghostImage1); break;
-                                case 2: imageView = new ImageView(ghostImage2); break;
-                                case 3: imageView = new ImageView(ghostImage3); break;
-                            }
-                            break;
+                            
+                            // switch (new Random().nextInt(4)) {
+                            //     case 0: imageView = new ImageView(ghostImage0); break;
+                            //     case 1: imageView = new ImageView(ghostImage1); break;
+                            //     case 2: imageView = new ImageView(ghostImage2); break;
+                            //     case 3: imageView = new ImageView(ghostImage3); break;
+                            // }
+                            // break;
                         case '.':
                             Rectangle emptyTile = new Rectangle(TILE_SIZE, TILE_SIZE);
                             emptyTile.setFill(Color.BLACK);
@@ -165,8 +175,41 @@ public class App extends Application {
                 }
             }
 
+            for (int row = 0; row < levelData.length; row++) {
+                for (int col = 0; col < levelData[row].length; col++) {
+                    char cell = ghostGrid[row][col];
+                    ImageView imageView = null;
+
+                    switch (cell) {
+                        case 'C':
+                            Ghost ghost = new Ghost(row, col, new Random().nextInt(4));
+                            ghosts.add(ghost);
+                            switch (ghost.getColor()) {
+                                case 0: imageView = new ImageView(ghostImage0); break;
+                                case 1: imageView = new ImageView(ghostImage1); break;
+                                case 2: imageView = new ImageView(ghostImage2); break;
+                                case 3: imageView = new ImageView(ghostImage3); break;
+                            }
+                            break;
+                        case 'W':
+                            imageView = new ImageView(wallImage);
+                            break;
+                        default:
+                            imageView = new ImageView(emptyImage);
+                            continue;
+                    }
+                    if (imageView != null) {
+                        imageView.setFitWidth(TILE_SIZE);
+                        imageView.setFitHeight(TILE_SIZE);
+                        ghostGridPane.add(imageView, col, row);
+                    }
+                }
+            }
+
+            
+
             // Create root container
-            StackPane root = new StackPane(gridPane);
+            StackPane root = new StackPane(gridPane, ghostGridPane);
             root.getStyleClass().add("game-root");
 
             // Create scene
@@ -225,7 +268,10 @@ public class App extends Application {
 
             // Set up movement timeline
             movementTimeline = new Timeline(
-                new KeyFrame(Duration.seconds(speed), event -> movePlayer(gridPane, levelData))
+                new KeyFrame(Duration.seconds(speed), event -> {
+                    movePlayer(gridPane, levelData);
+                    moveGhosts(ghostGridPane);
+                })
             );
             movementTimeline.setCycleCount(Timeline.INDEFINITE);
             movementTimeline.play();
@@ -420,6 +466,67 @@ public class App extends Application {
         );
         mouthAnimationTimeline.setCycleCount(Timeline.INDEFINITE);
         mouthAnimationTimeline.play();
+    }
+
+    private void moveGhosts(GridPane ghostGridPane) {
+        for (Ghost ghost : ghosts) {
+            int newRow = ghost.getRow();
+            int newCol = ghost.getCol();
+
+            // Randomly choose a direction
+            switch (new Random().nextInt(4)) {
+                case 0: newRow--; break; // UP
+                case 1: newRow++; break; // DOWN
+                case 2: newCol--; break; // LEFT
+                case 3: newCol++; break; // RIGHT
+            }
+
+            // Check if the new position is valid and not occupied by another ghost
+            if (levelData[newRow][newCol] != 'W' && levelData[newRow][newCol] != 'C') {
+                if (newRow == playerRow && newCol == playerCol) {
+                    showGameOver();
+                    return; // Exit the method to stop further ghost movement
+                }
+                // Clear old position
+                ghostGridPane.getChildren().removeIf(node -> 
+                    GridPane.getRowIndex(node) == ghost.getRow() && 
+                    GridPane.getColumnIndex(node) == ghost.getCol());
+                levelData[ghost.getRow()][ghost.getCol()] = '.';
+
+                // Update ghost position
+                ghost.setRow(newRow);
+                ghost.setCol(newCol);
+                levelData[ghost.getRow()][ghost.getCol()] = 'C';
+
+                // Add ghost at new position
+                Image ghostImage0 = new Image(getClass().getResourceAsStream("/pacman/images/ghosts/green.png"));
+                Image ghostImage1 = new Image(getClass().getResourceAsStream("/pacman/images/ghosts/orange.png"));
+                Image ghostImage2 = new Image(getClass().getResourceAsStream("/pacman/images/ghosts/pink.png"));
+                Image ghostImage3 = new Image(getClass().getResourceAsStream("/pacman/images/ghosts/red.png"));
+
+                Image ghostImage;
+                switch (ghost.getColor()) {
+                    case 0: ghostImage = ghostImage0; break;
+                    case 1: ghostImage = ghostImage1; break;
+                    case 2: ghostImage = ghostImage2; break;
+                    case 3: ghostImage = ghostImage3; break;
+                    default: ghostImage = ghostImage0; break;
+                }
+                ImageView ghostView = new ImageView(ghostImage);
+                ghostView.setFitWidth(TILE_SIZE);
+                ghostView.setFitHeight(TILE_SIZE);
+                ghostGridPane.add(ghostView, newCol, newRow);
+            }
+        }
+    }
+
+    private boolean isGhostAtPosition(int row, int col) {
+        for (Ghost ghost : ghosts) {
+            if (ghost.getRow() == row && ghost.getCol() == col) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public static void main(String[] args) {

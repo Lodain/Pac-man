@@ -4,11 +4,13 @@ public class Ghost {
     private int row;
     private int col;
     private char last;
+    private int color;
 
-    public Ghost(int row, int col) {
+    public Ghost(int row, int col, int color) {
         this.row = row;
         this.col = col;
         this.last = '.'; // Initialize with '.'
+        this.color = color;
     }
 
     public int getRow() {
@@ -33,5 +35,13 @@ public class Ghost {
 
     public void setLast(char last) {
         this.last = last;
+    }
+
+    public int getColor() {
+        return color;
+    }
+
+    public void setColor(int color) {
+        this.color = color;
     }
 } 
