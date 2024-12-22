@@ -1,5 +1,9 @@
 package pacman;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -7,6 +11,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.VBox;
+import javafx.stage.FileChooser;
+import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
 import pacman.entities.LevelReader;
 
@@ -52,8 +58,39 @@ public class LevelSelectScreen {
             createLevelScreen.show(primaryStage, () -> show(primaryStage));
         });
 
+        Button importLevelButton = new Button("Import Level");
+        importLevelButton.setOnAction(event -> {
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Select Level File");
+            fileChooser.getExtensionFilters().add(
+                new ExtensionFilter("Text Files", "*.txt")
+            );
+
+            File selectedFile = fileChooser.showOpenDialog(primaryStage);
+            if (selectedFile != null) {
+                try {
+                    // Create levels directory if it doesn't exist
+                    File levelsDir = new File("src/main/resources/pacman/levels");
+                    if (!levelsDir.exists()) {
+                        levelsDir.mkdirs();
+                    }
+
+                    // Copy file to levels directory
+                    File destFile = new File(levelsDir, selectedFile.getName());
+                    Files.copy(selectedFile.toPath(), destFile.toPath(), 
+                              StandardCopyOption.REPLACE_EXISTING);
+
+                    // Refresh the list
+                    levelListView.getItems().clear();
+                    levelListView.getItems().addAll(new LevelReader().getAvailableLevels());
+                } catch (IOException e) {
+                    System.err.println("Error importing level: " + e.getMessage());
+                }
+            }
+        });
+
         VBox layout = new VBox(15);
-        layout.getChildren().addAll(levelListView, createLevelButton, backButton);
+        layout.getChildren().addAll(levelListView, createLevelButton, importLevelButton, backButton);
         layout.getStyleClass().add("level-selector-layout");
 
         Scene levelScene = new Scene(layout, 700, 700);
