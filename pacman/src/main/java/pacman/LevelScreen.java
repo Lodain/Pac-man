@@ -40,6 +40,9 @@ public class LevelScreen {
     private String levelName;
     private Runnable returnToMenuCallback;
 
+    private int point=0;
+    private boolean key=false;
+
     // Load images
     Image wallImage = new Image(getClass().getResourceAsStream("/pacman/images/wall.png"));
     Image gateImage = new Image(getClass().getResourceAsStream("/pacman/images/gate.png"));
@@ -237,9 +240,11 @@ public class LevelScreen {
     }
 
     private void movePlayer(GridPane gridPane, char[][] levelData) {
+        boolean move=false;
         try {
             int newRow = playerRow;
             int newCol = playerCol;
+            int nextSquare;
 
             switch (playerDirection) {
                 case "UP": newRow--; break;
@@ -247,8 +252,24 @@ public class LevelScreen {
                 case "LEFT": newCol--; break;
                 case "RIGHT": newCol++; break;
             }
+            nextSquare = Movement.checkMovement(levelData[newRow][newCol]);
 
-            if (Movement.checkMovement(levelData[newRow][newCol]) == 1) {
+            if (Movement.checkMovement(ghostGrid[newRow][newCol]) == 2) {
+                showGameOver();
+            }
+            else if (nextSquare == 1) {
+                move=true;
+            }
+            else if (nextSquare == 5){
+                move=true;
+                point++;
+            }
+            else if (nextSquare == 3){
+                move=true;
+                key=true;
+            }
+
+            if (move){
                 // Clear old position
                 gridPane.getChildren().removeIf(node -> 
                     GridPane.getRowIndex(node) == playerRow && 
@@ -273,9 +294,7 @@ public class LevelScreen {
                 playerView.setFitHeight(TILE_SIZE);
                 gridPane.add(playerView, playerCol, playerRow);
             }
-            else if (Movement.checkMovement(ghostGrid[newRow][newCol]) == 2) {
-                showGameOver();
-            }
+            
         } catch (Exception e) {
             e.printStackTrace();
             System.err.println("Error moving player: " + e.getMessage());
@@ -449,7 +468,8 @@ public class LevelScreen {
                 // Update ghost position
                 ghost.setRow(newRow);
                 ghost.setCol(newCol);
-                ghostGrid[ghost.getRow()][ghost.getCol()] = 'C';
+                ghostGrid[newRow][newCol] = 'C'; 
+                
 
                 // Add ghost at new position
 
