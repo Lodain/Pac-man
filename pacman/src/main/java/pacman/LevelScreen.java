@@ -6,6 +6,7 @@ import java.util.Random;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -42,6 +43,8 @@ public class LevelScreen {
 
     private int point=0;
     private boolean key=false;
+
+    private Label pointsLabel;
 
     // Load images
     Image wallImage = new Image(getClass().getResourceAsStream("/pacman/images/wall.png"));
@@ -86,6 +89,10 @@ public class LevelScreen {
             // Set dimensions of ghostGridPane to match gridPane
             ghostGridPane.setPrefWidth(gridPane.getPrefWidth());
             ghostGridPane.setPrefHeight(gridPane.getPrefHeight());
+
+            // Initialize points label
+            pointsLabel = new Label("Points: " + point);
+            pointsLabel.getStyleClass().add("points-label");
 
             
 
@@ -163,6 +170,10 @@ public class LevelScreen {
             // Create root container
             StackPane root = new StackPane(gridPane, ghostGridPane);
             root.getStyleClass().add("game-root");
+
+            // Add points label to the root
+            StackPane.setAlignment(pointsLabel, Pos.TOP_RIGHT);
+            root.getChildren().add(pointsLabel);
 
             // Create scene
             Scene gameScene = new Scene(root, 700, 700);
@@ -293,6 +304,9 @@ public class LevelScreen {
                 playerView.setFitWidth(TILE_SIZE);
                 playerView.setFitHeight(TILE_SIZE);
                 gridPane.add(playerView, playerCol, playerRow);
+
+                // Update points label
+                pointsLabel.setText("Points: " + point);
             }
             
         } catch (Exception e) {
@@ -349,6 +363,8 @@ public class LevelScreen {
             playerCol = 0;
             playerDirection = "RIGHT";
             pacmanImageCounter = 1;
+            point=0;
+            key=false;
             // Return to main menu
             if (returnToMenuCallback != null) {
                 returnToMenuCallback.run();
@@ -395,6 +411,8 @@ public class LevelScreen {
             playerCol = 0;
             playerDirection = "RIGHT";
             pacmanImageCounter = 1;
+            point=0;
+            key=false;
             loadLevel(primaryStage, levelName); // Reload the current level
         });
 
