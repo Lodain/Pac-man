@@ -470,4 +470,8 @@ public class LevelScreen {
     public void setReturnToMenuCallback(Runnable callback) {
         this.returnToMenuCallback = callback;
     }
+
+    public void setSpeed(double speed) {
+        this.speed = speed;
+    }
 }

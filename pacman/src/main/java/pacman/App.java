@@ -8,9 +8,12 @@ public class App extends Application {
     private final StartScreen startScreen = new StartScreen();
     private final LevelSelectScreen levelSelectScreen = new LevelSelectScreen();
     private final LevelScreen levelScreen = new LevelScreen();
+    private final OptionsScreen optionsScreen = new OptionsScreen();
+    private Stage primaryStage;
 
     @Override
     public void start(Stage primaryStage) {
+        this.primaryStage = primaryStage;
         levelSelectScreen.setLevelSelectedCallback(selectedLevel -> {
             levelScreen.loadLevel(primaryStage, selectedLevel);
         });
@@ -27,7 +30,12 @@ public class App extends Application {
     }
 
     private void handleOptionsButton() {
-        System.out.println("Options button clicked!");
+        optionsScreen.show(this.primaryStage, () -> {
+            levelScreen.setSpeed(optionsScreen.getSelectedSpeed());
+            startScreen.show(this.primaryStage, 
+                () -> levelSelectScreen.show(this.primaryStage), 
+                () -> handleOptionsButton());
+        });
     }
 
     public static void main(String[] args) {
