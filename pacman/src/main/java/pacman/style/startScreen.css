@@ -201,3 +201,14 @@
 .options-slider .axis {
     -fx-tick-label-fill: yellow;
 }
+
+.start-screen {
+    -fx-background-color: black;
+    -fx-padding: 50;
+    -fx-alignment: center;
+    -fx-spacing: 20;
+}
+
+.start-screen ImageView {
+    -fx-effect: dropshadow(gaussian, yellow, 10, 0, 0, 0);
+}
