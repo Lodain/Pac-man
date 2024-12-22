@@ -56,12 +56,14 @@
 /* Add these styles for game grid centering */
 .game-root {
     -fx-alignment: center;
+    -fx-background-color: black;
 }
 
 .game-grid {
     -fx-background-color: transparent;
     -fx-padding: 10;
     -fx-alignment: center;
+    -fx-snap-to-pixel: false; /* Helps with smooth scaling */
 }
 
 /* Update grid cells style */
@@ -252,4 +254,17 @@
     -fx-padding: 10;
     -fx-spacing: 10;
     -fx-alignment: center;
+}
+
+.toggle-button {
+    -fx-background-color: #333;
+    -fx-text-fill: yellow;
+    -fx-min-width: 100px;
+    -fx-padding: 5 10;
+    -fx-border-color: transparent;
+    -fx-cursor: hand;
+}
+
+.toggle-button:hover {
+    -fx-background-color: #444;
 }

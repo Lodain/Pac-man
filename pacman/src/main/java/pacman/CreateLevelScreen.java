@@ -4,6 +4,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
@@ -11,6 +12,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -49,17 +51,47 @@ public class CreateLevelScreen {
         Button createGridButton = new Button("Create Grid");
         dimensionBox.getChildren().addAll(widthField, heightField, createGridButton);
 
+        // Create a StackPane to hold the game grid with maximum height
+        StackPane gridContainer = new StackPane();
+        gridContainer.setPrefSize(700, 400);
+        gridContainer.setMaxSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
+        gridContainer.setMinHeight(200); // Set minimum height
+        gridContainer.setMaxHeight(400); // Set maximum height
+        
         // Game grid
         gameGrid = new GridPane();
         gameGrid.setHgap(2);
         gameGrid.setVgap(2);
         gameGrid.getStyleClass().add("game-grid");
         gameGrid.setPadding(new Insets(10));
+        
+        gridContainer.getChildren().add(gameGrid);
+        StackPane.setAlignment(gameGrid, Pos.CENTER);
 
+        // Create a container for the asset toolbar that can be collapsed
+        VBox assetContainer = new VBox(5);
+        assetContainer.setMinHeight(80);
+        
+        // Create toggle button for assets
+        Button toggleAssetsButton = new Button("▼ Assets");
+        toggleAssetsButton.getStyleClass().add("toggle-button");
+        
         // Asset selection toolbar
         HBox assetBox = new HBox(10);
         assetBox.setPadding(new Insets(10));
         assetBox.getStyleClass().add("asset-toolbar");
+        assetBox.setMinHeight(80);
+        assetBox.setAlignment(Pos.CENTER);
+        assetBox.setVisible(true); // Initially visible
+
+        // Add toggle functionality
+        toggleAssetsButton.setOnAction(e -> {
+            assetBox.setVisible(!assetBox.isVisible());
+            toggleAssetsButton.setText(assetBox.isVisible() ? "▼ Assets" : "▲ Assets");
+        });
+
+        // Add components to asset container
+        assetContainer.getChildren().addAll(toggleAssetsButton, assetBox);
 
         // Create tile buttons
         createTileButton(assetBox, wallImage, 'W', "Wall");
@@ -92,7 +124,7 @@ public class CreateLevelScreen {
         Button backButton = new Button("Back");
         backButton.setOnAction(event -> onBack.run());
 
-        layout.getChildren().addAll(levelNameField, dimensionBox, gameGrid, assetBox, saveButton, backButton);
+        layout.getChildren().addAll(levelNameField, dimensionBox, gridContainer, assetContainer, saveButton, backButton);
 
         Scene scene = new Scene(layout, 800, 800);
         scene.getStylesheets().add(getClass().getResource("/pacman/style/startScreen.css").toExternalForm());
@@ -102,6 +134,21 @@ public class CreateLevelScreen {
     private void createGrid() {
         gameGrid.getChildren().clear();
         levelGrid = new char[gridHeight][gridWidth];
+
+        // Calculate the scaling factor based on grid size
+        double maxWidth = 600; // Maximum width for the game area
+        double maxHeight = 400; // Slightly smaller max height to accommodate UI elements
+        
+        int totalWidth = gridWidth * TILE_SIZE;
+        int totalHeight = gridHeight * TILE_SIZE;
+        
+        double scaleX = maxWidth / totalWidth;
+        double scaleY = maxHeight / totalHeight;
+        double scale = Math.min(1.0, Math.min(scaleX, scaleY));
+
+        // Apply scaling to the grid
+        gameGrid.setScaleX(scale);
+        gameGrid.setScaleY(scale);
 
         // Initialize grid with empty spaces
         for (int row = 0; row < gridHeight; row++) {

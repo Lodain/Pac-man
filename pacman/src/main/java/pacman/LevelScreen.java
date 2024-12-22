@@ -14,6 +14,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -90,9 +91,22 @@ public class LevelScreen {
             gridPane.getStyleClass().add("game-grid");
             ghostGridPane.getStyleClass().add("game-grid");
 
-            // Set dimensions of ghostGridPane to match gridPane
-            ghostGridPane.setPrefWidth(gridPane.getPrefWidth());
-            ghostGridPane.setPrefHeight(gridPane.getPrefHeight());
+            // Calculate the scaling factor based on level size
+            double maxWidth = 600; // Maximum width for the game area
+            double maxHeight = 600; // Maximum height for the game area
+            
+            int levelWidth = levelData[0].length * TILE_SIZE;
+            int levelHeight = levelData.length * TILE_SIZE;
+            
+            double scaleX = maxWidth / levelWidth;
+            double scaleY = maxHeight / levelHeight;
+            double scale = Math.min(1.0, Math.min(scaleX, scaleY));
+
+            // Apply scaling to both grid panes
+            gridPane.setScaleX(scale);
+            gridPane.setScaleY(scale);
+            ghostGridPane.setScaleX(scale);
+            ghostGridPane.setScaleY(scale);
 
             // Initialize points label
             pointsLabel = new Label("Points: " + point);
@@ -177,15 +191,27 @@ public class LevelScreen {
             keyImageView.setFitHeight(TILE_SIZE);
             keyImageView.setVisible(false); // Initially hidden
 
-            // Create root container
+            // Create root container with fixed size
             StackPane root = new StackPane(gridPane, ghostGridPane);
             root.getStyleClass().add("game-root");
+            root.setMaxSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
+            root.setPrefSize(700, 700);
+            
+            // Center the grid panes
+            StackPane.setAlignment(gridPane, Pos.CENTER);
+            StackPane.setAlignment(ghostGridPane, Pos.CENTER);
 
             // Add points label to the root
+            pointsLabel = new Label("Points: " + point);
+            pointsLabel.getStyleClass().add("points-label");
             StackPane.setAlignment(pointsLabel, Pos.TOP_RIGHT);
             root.getChildren().add(pointsLabel);
 
             // Add key image view to the root
+            keyImageView = new ImageView(keyImage);
+            keyImageView.setFitWidth(TILE_SIZE);
+            keyImageView.setFitHeight(TILE_SIZE);
+            keyImageView.setVisible(false);
             StackPane.setAlignment(keyImageView, Pos.TOP_LEFT);
             root.getChildren().add(keyImageView);
 
