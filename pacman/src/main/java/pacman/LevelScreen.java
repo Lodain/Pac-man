@@ -110,6 +110,8 @@ public class LevelScreen {
                             playerCol = col;
                             imageView = new ImageView(playerImage);
                             break;
+                        case 'C':
+                            levelData[row][col]='.';
                         case '.':
                             Rectangle emptyTile = new Rectangle(TILE_SIZE, TILE_SIZE);
                             emptyTile.setFill(Color.BLACK);
@@ -271,7 +273,7 @@ public class LevelScreen {
                 playerView.setFitHeight(TILE_SIZE);
                 gridPane.add(playerView, playerCol, playerRow);
             }
-            else if (Movement.checkMovement(levelData[newRow][newCol]) == 2) {
+            else if (Movement.checkMovement(ghostGrid[newRow][newCol]) == 2) {
                 showGameOver();
             }
         } catch (Exception e) {
@@ -433,7 +435,7 @@ public class LevelScreen {
             }
 
             // Check if the new position is valid and not occupied by another ghost
-            if (levelData[newRow][newCol] != 'W' && levelData[newRow][newCol] != 'C') {
+            if (levelData[newRow][newCol] != 'W' && ghostGrid[newRow][newCol] != 'C') {
                 if (newRow == playerRow && newCol == playerCol) {
                     showGameOver();
                     return; // Exit the method to stop further ghost movement
@@ -442,12 +444,12 @@ public class LevelScreen {
                 ghostGridPane.getChildren().removeIf(node -> 
                     GridPane.getRowIndex(node) == ghost.getRow() && 
                     GridPane.getColumnIndex(node) == ghost.getCol());
-                levelData[ghost.getRow()][ghost.getCol()] = '.';
+                ghostGrid[ghost.getRow()][ghost.getCol()] = '.';
 
                 // Update ghost position
                 ghost.setRow(newRow);
                 ghost.setCol(newCol);
-                levelData[ghost.getRow()][ghost.getCol()] = 'C';
+                ghostGrid[ghost.getRow()][ghost.getCol()] = 'C';
 
                 // Add ghost at new position
 
