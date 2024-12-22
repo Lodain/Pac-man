@@ -37,7 +37,13 @@ public class LevelSelectScreen {
 
         Button backButton = new Button("Back");
         backButton.setOnAction(event -> {
-            // Implement back button action
+            StartScreen startScreen = new StartScreen();
+            startScreen.show(primaryStage, 
+                () -> show(primaryStage), 
+                () -> {
+                    OptionsScreen optionsScreen = new OptionsScreen();
+                    optionsScreen.show(primaryStage, () -> show(primaryStage));
+                });
         });
 
         Button createLevelButton = new Button("Create Level");
