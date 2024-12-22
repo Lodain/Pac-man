@@ -292,6 +292,9 @@ public class LevelScreen {
                 key=true;
                 updateKeyImageVisibility();
             }
+            else if (nextSquare == 4 && key){
+                showYouWin();
+            }
 
             if (move){
                 // Clear old position
@@ -530,5 +533,61 @@ public class LevelScreen {
 
     private void updateKeyImageVisibility() {
         keyImageView.setVisible(key);
+    }
+
+    private void showYouWin() {
+        // Stop the game
+        isPaused = true;
+        movementTimeline.stop();
+
+        // Create "You Win" menu
+        VBox youWinMenu = new VBox(10);
+        youWinMenu.getStyleClass().add("pause-menu"); // Reuse pause menu styling
+
+        Label youWinLabel = new Label("YOU WIN");
+        youWinLabel.getStyleClass().add("win-label"); // New style for win label
+
+        Button playAgainButton = new Button("Play Again");
+        Button mainMenuButton = new Button("Main Menu");
+
+        playAgainButton.getStyleClass().add("pause-menu-button");
+        mainMenuButton.getStyleClass().add("pause-menu-button");
+
+        youWinMenu.getChildren().addAll(youWinLabel, playAgainButton, mainMenuButton);
+
+        // Add menu to the game screen
+        StackPane root = (StackPane) primaryStage.getScene().getRoot();
+        root.getChildren().add(youWinMenu);
+
+        // Button actions
+        playAgainButton.setOnAction(e -> {
+            root.getChildren().remove(youWinMenu);
+            isPaused = false;
+            stopMovementTimeline();
+            // Reset level data
+            levelData = null;
+            playerRow = 0;
+            playerCol = 0;
+            playerDirection = "RIGHT";
+            pacmanImageCounter = 1;
+            point = 0;
+            key = false;
+            loadLevel(primaryStage, levelName); // Reload the current level
+        });
+
+        mainMenuButton.setOnAction(e -> {
+            root.getChildren().remove(youWinMenu);
+            isPaused = false;
+            stopMovementTimeline();
+            // Reset level data
+            levelData = null;
+            playerRow = 0;
+            playerCol = 0;
+            playerDirection = "RIGHT";
+            pacmanImageCounter = 1;
+            if (returnToMenuCallback != null) {
+                returnToMenuCallback.run();
+            }
+        });
     }
 }

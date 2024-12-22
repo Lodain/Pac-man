@@ -114,3 +114,10 @@
     -fx-border-radius: 5;
     -fx-background-radius: 5;
 }
+
+/* You Win specific styles */
+.win-label {
+    -fx-text-fill: green;
+    -fx-font-size: 32;
+    -fx-font-weight: bold;
+}
