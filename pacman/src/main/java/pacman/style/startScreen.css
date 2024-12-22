@@ -146,3 +146,37 @@
 .back-button:pressed {
     -fx-text-fill: #FFA500;
 }
+
+/* Style for the level list view */
+.level-list-view {
+    -fx-background-color: black;
+    -fx-control-inner-background: black;
+    -fx-text-fill: yellow;
+    -fx-padding: 10;
+    -fx-border-color: yellow;
+    -fx-border-width: 1;
+    -fx-border-radius: 5;
+    -fx-background-radius: 5;
+}
+
+.level-list-view .list-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: yellow;
+}
+
+.level-list-view .list-cell:hover {
+    -fx-background-color: #333333;
+}
+
+.level-list-view .list-cell:selected {
+    -fx-background-color: #555555;
+    -fx-text-fill: #FFD700;
+}
+
+/* Adjust layout for level selector */
+.level-selector-layout {
+    -fx-background-color: black;
+    -fx-padding: 20;
+    -fx-alignment: center;
+    -fx-spacing: 15;
+}

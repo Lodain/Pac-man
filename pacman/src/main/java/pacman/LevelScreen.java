@@ -591,6 +591,8 @@ public class LevelScreen {
             playerCol = 0;
             playerDirection = "RIGHT";
             pacmanImageCounter = 1;
+            point = 0;
+            key = false;
             if (returnToMenuCallback != null) {
                 returnToMenuCallback.run();
             }

@@ -24,6 +24,7 @@ public class LevelSelectScreen {
 
         ListView<String> levelListView = new ListView<>();
         levelListView.getItems().addAll(levels);
+        levelListView.getStyleClass().add("level-list-view");
 
         levelListView.setOnMouseClicked(event -> {
             if (event.getClickCount() == 2) {
@@ -37,8 +38,9 @@ public class LevelSelectScreen {
         Button backButton = new Button("Back");
         backButton.setOnAction(event -> onBack.run());
 
-        VBox layout = new VBox(10);
+        VBox layout = new VBox(15);
         layout.getChildren().addAll(levelListView, backButton);
+        layout.getStyleClass().add("level-selector-layout");
 
         Scene levelScene = new Scene(layout, 700, 700);
         levelScene.getStylesheets().add(getClass().getResource("/pacman/style/startScreen.css").toExternalForm());
