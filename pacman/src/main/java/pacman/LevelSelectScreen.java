@@ -18,7 +18,7 @@ public class LevelSelectScreen {
         this.levelSelectedCallback = callback;
     }
 
-    public void show(Stage primaryStage, Runnable onBack) {
+    public void show(Stage primaryStage) {
         LevelReader levelReader = new LevelReader();
         List<String> levels = levelReader.getAvailableLevels();
 
@@ -36,10 +36,18 @@ public class LevelSelectScreen {
         });
 
         Button backButton = new Button("Back");
-        backButton.setOnAction(event -> onBack.run());
+        backButton.setOnAction(event -> {
+            // Implement back button action
+        });
+
+        Button createLevelButton = new Button("Create Level");
+        createLevelButton.setOnAction(event -> {
+            CreateLevelScreen createLevelScreen = new CreateLevelScreen();
+            createLevelScreen.show(primaryStage, () -> show(primaryStage));
+        });
 
         VBox layout = new VBox(15);
-        layout.getChildren().addAll(levelListView, backButton);
+        layout.getChildren().addAll(levelListView, createLevelButton, backButton);
         layout.getStyleClass().add("level-selector-layout");
 
         Scene levelScene = new Scene(layout, 700, 700);

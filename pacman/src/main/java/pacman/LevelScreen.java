@@ -128,7 +128,7 @@ public class LevelScreen {
                             levelData[row][col]='.';
                         case '.':
                             Rectangle emptyTile = new Rectangle(TILE_SIZE, TILE_SIZE);
-                            emptyTile.setFill(Color.BLACK);
+                            emptyTile.setFill(Color.TRANSPARENT);
                             gridPane.add(emptyTile, col, row);
                             continue;
                     }
@@ -269,7 +269,7 @@ public class LevelScreen {
     }
 
     private void movePlayer(GridPane gridPane, char[][] levelData) {
-        boolean move=false;
+        boolean move = false;
         try {
             int newRow = playerRow;
             int newCol = playerCol;
@@ -287,30 +287,35 @@ public class LevelScreen {
                 showGameOver();
             }
             else if (nextSquare == 1) {
-                move=true;
+                move = true;
             }
             else if (nextSquare == 5){
-                move=true;
+                move = true;
                 point++;
             }
             else if (nextSquare == 3){
-                move=true;
-                key=true;
+                move = true;
+                key = true;
                 updateKeyImageVisibility();
             }
             else if (nextSquare == 4 && key){
                 showYouWin();
             }
 
-            if (move){
+            if (move) {
                 // Clear old position
-                gridPane.getChildren().removeIf(node -> 
-                    GridPane.getRowIndex(node) == playerRow && 
-                    GridPane.getColumnIndex(node) == playerCol);
+                gridPane.getChildren().removeIf(node -> {
+                    Integer row = GridPane.getRowIndex(node);
+                    Integer col = GridPane.getColumnIndex(node);
+                    return row != null && col != null && 
+                           row == playerRow && col == playerCol;
+                });
 
                 // Add empty space at old position
                 Rectangle emptyTile = new Rectangle(TILE_SIZE, TILE_SIZE);
-                emptyTile.setFill(Color.BLACK);
+                emptyTile.setFill(Color.TRANSPARENT);
+                GridPane.setRowIndex(emptyTile, playerRow);
+                GridPane.setColumnIndex(emptyTile, playerCol);
                 gridPane.add(emptyTile, playerCol, playerRow);
 
                 // Update player position
@@ -325,12 +330,13 @@ public class LevelScreen {
                 ImageView playerView = new ImageView(playerImage);
                 playerView.setFitWidth(TILE_SIZE);
                 playerView.setFitHeight(TILE_SIZE);
+                GridPane.setRowIndex(playerView, playerRow);
+                GridPane.setColumnIndex(playerView, playerCol);
                 gridPane.add(playerView, playerCol, playerRow);
 
                 // Update points label
                 pointsLabel.setText("Points: " + point);
             }
-            
         } catch (Exception e) {
             e.printStackTrace();
             System.err.println("Error moving player: " + e.getMessage());
@@ -453,9 +459,12 @@ public class LevelScreen {
 
     private void updatePlayerTexture(GridPane gridPane) {
         // Remove current player image
-        gridPane.getChildren().removeIf(node -> 
-            GridPane.getRowIndex(node) == playerRow && 
-            GridPane.getColumnIndex(node) == playerCol);
+        gridPane.getChildren().removeIf(node -> {
+            Integer row = GridPane.getRowIndex(node);
+            Integer col = GridPane.getColumnIndex(node);
+            return row != null && col != null && 
+                   row == playerRow && col == playerCol;
+        });
 
         // Add new player image with updated direction
         Image playerImage = new Image(getClass().getResource("/pacman/images/pacman-" + 
@@ -463,6 +472,8 @@ public class LevelScreen {
         ImageView playerView = new ImageView(playerImage);
         playerView.setFitWidth(TILE_SIZE);
         playerView.setFitHeight(TILE_SIZE);
+        GridPane.setRowIndex(playerView, playerRow);
+        GridPane.setColumnIndex(playerView, playerCol);
         gridPane.add(playerView, playerCol, playerRow);
     }
 
@@ -497,19 +508,20 @@ public class LevelScreen {
                     return; // Exit the method to stop further ghost movement
                 }
                 // Clear old position
-                ghostGridPane.getChildren().removeIf(node -> 
-                    GridPane.getRowIndex(node) == ghost.getRow() && 
-                    GridPane.getColumnIndex(node) == ghost.getCol());
+                ghostGridPane.getChildren().removeIf(node -> {
+                    Integer row = GridPane.getRowIndex(node);
+                    Integer col = GridPane.getColumnIndex(node);
+                    return row != null && col != null && 
+                           row == ghost.getRow() && col == ghost.getCol();
+                });
                 ghostGrid[ghost.getRow()][ghost.getCol()] = '.';
 
                 // Update ghost position
                 ghost.setRow(newRow);
                 ghost.setCol(newCol);
-                ghostGrid[newRow][newCol] = 'C'; 
-                
+                ghostGrid[newRow][newCol] = 'C';
 
                 // Add ghost at new position
-
                 Image ghostImage;
                 switch (ghost.getColor()) {
                     case 0: ghostImage = ghostImage0; break;
@@ -521,6 +533,8 @@ public class LevelScreen {
                 ImageView ghostView = new ImageView(ghostImage);
                 ghostView.setFitWidth(TILE_SIZE);
                 ghostView.setFitHeight(TILE_SIZE);
+                GridPane.setRowIndex(ghostView, newRow);
+                GridPane.setColumnIndex(ghostView, newCol);
                 ghostGridPane.add(ghostView, newCol, newRow);
             }
         }

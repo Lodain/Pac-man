@@ -59,7 +59,14 @@
 }
 
 .game-grid {
+    -fx-background-color: transparent;
+    -fx-padding: 10;
     -fx-alignment: center;
+}
+
+/* Update grid cells style */
+.game-grid ImageView {
+    -fx-background-color: transparent;
 }
 
 /* Game Over specific styles (optional - if you want different styling from pause menu) */
@@ -211,4 +218,38 @@
 
 .start-screen ImageView {
     -fx-effect: dropshadow(gaussian, yellow, 10, 0, 0, 0);
+}
+
+.create-level-layout {
+    -fx-background-color: black;
+    -fx-padding: 20;
+    -fx-alignment: center;
+    -fx-spacing: 10;
+}
+
+.tile-button {
+    -fx-background-color: transparent;
+    -fx-padding: 5;
+    -fx-border-color: transparent;
+}
+
+.tile-button:hover {
+    -fx-background-color: rgba(255, 255, 0, 0.2);
+    -fx-border-color: yellow;
+}
+
+.tile-button:pressed {
+    -fx-background-color: rgba(255, 255, 0, 0.4);
+}
+
+.tile-button.selected {
+    -fx-border-color: yellow;
+    -fx-border-width: 2;
+}
+
+.asset-toolbar {
+    -fx-background-color: #222;
+    -fx-padding: 10;
+    -fx-spacing: 10;
+    -fx-alignment: center;
 }
