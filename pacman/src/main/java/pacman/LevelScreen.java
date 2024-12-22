@@ -58,6 +58,8 @@ public class LevelScreen {
     Image ghostImage3 = new Image(getClass().getResourceAsStream("/pacman/images/ghosts/red.png"));
     Image emptyImage = new Image(getClass().getResourceAsStream("/pacman/images/empty.png"));
 
+    private ImageView keyImageView;
+
     public void loadLevel(Stage primaryStage, String levelName) {
         this.primaryStage = primaryStage;
         this.levelName = levelName;
@@ -167,6 +169,12 @@ public class LevelScreen {
                 }
             }
 
+            // Initialize key image view
+            keyImageView = new ImageView(keyImage);
+            keyImageView.setFitWidth(TILE_SIZE);
+            keyImageView.setFitHeight(TILE_SIZE);
+            keyImageView.setVisible(false); // Initially hidden
+
             // Create root container
             StackPane root = new StackPane(gridPane, ghostGridPane);
             root.getStyleClass().add("game-root");
@@ -174,6 +182,10 @@ public class LevelScreen {
             // Add points label to the root
             StackPane.setAlignment(pointsLabel, Pos.TOP_RIGHT);
             root.getChildren().add(pointsLabel);
+
+            // Add key image view to the root
+            StackPane.setAlignment(keyImageView, Pos.TOP_LEFT);
+            root.getChildren().add(keyImageView);
 
             // Create scene
             Scene gameScene = new Scene(root, 700, 700);
@@ -278,6 +290,7 @@ public class LevelScreen {
             else if (nextSquare == 3){
                 move=true;
                 key=true;
+                updateKeyImageVisibility();
             }
 
             if (move){
@@ -513,5 +526,9 @@ public class LevelScreen {
 
     public void setSpeed(double speed) {
         this.speed = speed;
+    }
+
+    private void updateKeyImageVisibility() {
+        keyImageView.setVisible(key);
     }
 }
