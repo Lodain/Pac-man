@@ -180,3 +180,24 @@
     -fx-alignment: center;
     -fx-spacing: 15;
 }
+
+.speed-label {
+    -fx-text-fill: yellow;
+    -fx-font-size: 14px;
+}
+
+.speed-labels-container {
+    -fx-padding: 0 20;
+}
+
+.options-slider .track {
+    -fx-background-color: #333333;
+}
+
+.options-slider .thumb {
+    -fx-background-color: yellow;
+}
+
+.options-slider .axis {
+    -fx-tick-label-fill: yellow;
+}

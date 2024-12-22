@@ -60,6 +60,8 @@ public class LevelScreen {
 
     private ImageView keyImageView;
 
+    private boolean isGameEndMenuShown = false;
+
     public void loadLevel(Stage primaryStage, String levelName) {
         this.primaryStage = primaryStage;
         this.levelName = levelName;
@@ -193,7 +195,7 @@ public class LevelScreen {
 
             // Set up keyboard handling
             gameScene.setOnKeyPressed(event -> {
-                if (event.getCode() == KeyCode.ESCAPE) {
+                if (event.getCode() == KeyCode.ESCAPE && !isGameEndMenuShown) {
                     if (isPaused) {
                         StackPane rootPane = (StackPane) primaryStage.getScene().getRoot();
                         rootPane.getChildren().removeIf(node -> node instanceof VBox && 
@@ -393,7 +395,7 @@ public class LevelScreen {
     }
 
     private void showGameOver() {
-        // Stop the game
+        isGameEndMenuShown = true;
         isPaused = true;
         movementTimeline.stop();
 
@@ -539,7 +541,7 @@ public class LevelScreen {
     }
 
     private void showYouWin() {
-        // Stop the game
+        isGameEndMenuShown = true;
         isPaused = true;
         movementTimeline.stop();
 
