@@ -5,7 +5,6 @@ import javafx.stage.Stage;
 
 public class App extends Application {
 
-    private String levelName = null;
     private final StartScreen startScreen = new StartScreen();
     private final LevelSelectScreen levelSelectScreen = new LevelSelectScreen();
     private final LevelScreen levelScreen = new LevelScreen();
@@ -13,7 +12,6 @@ public class App extends Application {
     @Override
     public void start(Stage primaryStage) {
         levelSelectScreen.setLevelSelectedCallback(selectedLevel -> {
-            this.levelName = selectedLevel;
             levelScreen.loadLevel(primaryStage, selectedLevel);
         });
 

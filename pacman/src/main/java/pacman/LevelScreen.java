@@ -40,6 +40,18 @@ public class LevelScreen {
     private String levelName;
     private Runnable returnToMenuCallback;
 
+    // Load images
+    Image wallImage = new Image(getClass().getResourceAsStream("/pacman/images/wall.png"));
+    Image gateImage = new Image(getClass().getResourceAsStream("/pacman/images/gate.png"));
+    Image keyImage = new Image(getClass().getResourceAsStream("/pacman/images/key.png"));
+    Image pointImage = new Image(getClass().getResourceAsStream("/pacman/images/point.png"));
+    Image playerImage = new Image(getClass().getResourceAsStream("/pacman/images/pacman-right/1.png"));
+    Image ghostImage0 = new Image(getClass().getResourceAsStream("/pacman/images/ghosts/green.png"));
+    Image ghostImage1 = new Image(getClass().getResourceAsStream("/pacman/images/ghosts/orange.png"));
+    Image ghostImage2 = new Image(getClass().getResourceAsStream("/pacman/images/ghosts/pink.png"));
+    Image ghostImage3 = new Image(getClass().getResourceAsStream("/pacman/images/ghosts/red.png"));
+    Image emptyImage = new Image(getClass().getResourceAsStream("/pacman/images/empty.png"));
+
     public void loadLevel(Stage primaryStage, String levelName) {
         this.primaryStage = primaryStage;
         this.levelName = levelName;
@@ -72,17 +84,7 @@ public class LevelScreen {
             ghostGridPane.setPrefWidth(gridPane.getPrefWidth());
             ghostGridPane.setPrefHeight(gridPane.getPrefHeight());
 
-            // Load images
-            Image wallImage = new Image(getClass().getResourceAsStream("/pacman/images/wall.png"));
-            Image gateImage = new Image(getClass().getResourceAsStream("/pacman/images/gate.png"));
-            Image keyImage = new Image(getClass().getResourceAsStream("/pacman/images/key.png"));
-            Image pointImage = new Image(getClass().getResourceAsStream("/pacman/images/point.png"));
-            Image playerImage = new Image(getClass().getResourceAsStream("/pacman/images/pacman-right/1.png"));
-            Image ghostImage0 = new Image(getClass().getResourceAsStream("/pacman/images/ghosts/green.png"));
-            Image ghostImage1 = new Image(getClass().getResourceAsStream("/pacman/images/ghosts/orange.png"));
-            Image ghostImage2 = new Image(getClass().getResourceAsStream("/pacman/images/ghosts/pink.png"));
-            Image ghostImage3 = new Image(getClass().getResourceAsStream("/pacman/images/ghosts/red.png"));
-            Image emptyImage = new Image(getClass().getResourceAsStream("/pacman/images/empty.png"));
+            
 
             // Create the game board
             for (int row = 0; row < levelData.length; row++) {
@@ -448,10 +450,6 @@ public class LevelScreen {
                 levelData[ghost.getRow()][ghost.getCol()] = 'C';
 
                 // Add ghost at new position
-                Image ghostImage0 = new Image(getClass().getResourceAsStream("/pacman/images/ghosts/green.png"));
-                Image ghostImage1 = new Image(getClass().getResourceAsStream("/pacman/images/ghosts/orange.png"));
-                Image ghostImage2 = new Image(getClass().getResourceAsStream("/pacman/images/ghosts/pink.png"));
-                Image ghostImage3 = new Image(getClass().getResourceAsStream("/pacman/images/ghosts/red.png"));
 
                 Image ghostImage;
                 switch (ghost.getColor()) {
