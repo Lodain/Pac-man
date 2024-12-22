@@ -195,8 +195,9 @@ public class LevelScreen {
 
             // Set up keyboard handling
             gameScene.setOnKeyPressed(event -> {
-                if (event.getCode() == KeyCode.ESCAPE && !isGameEndMenuShown) {
-                    if (isPaused) {
+                if (event.getCode() == KeyCode.ESCAPE) {
+                    if (isPaused && !isGameEndMenuShown) {
+                        // Resume game
                         StackPane rootPane = (StackPane) primaryStage.getScene().getRoot();
                         rootPane.getChildren().removeIf(node -> node instanceof VBox && 
                             ((VBox) node).getStyleClass().contains("pause-menu"));
@@ -204,8 +205,11 @@ public class LevelScreen {
                         if (movementTimeline != null) {
                             movementTimeline.play();
                         }
-                        startMouthAnimation(gridPane);
-                    } else {
+                        if (mouthAnimationTimeline != null) {
+                            mouthAnimationTimeline.play();
+                        }
+                    } else if (!isGameEndMenuShown) {
+                        // Show pause menu
                         showPauseMenu();
                     }
                 } else if (!isPaused) {
@@ -343,9 +347,20 @@ public class LevelScreen {
     }
 
     private void showPauseMenu() {
+        if (isGameEndMenuShown) return; // Don't show pause menu if game end menu is shown
+        
         isPaused = true;
-        movementTimeline.pause();
-        mouthAnimationTimeline.pause();
+        if (movementTimeline != null) {
+            movementTimeline.pause();
+        }
+        if (mouthAnimationTimeline != null) {
+            mouthAnimationTimeline.pause();
+        }
+
+        // Remove any existing pause menu first
+        StackPane root = (StackPane) primaryStage.getScene().getRoot();
+        root.getChildren().removeIf(node -> node instanceof VBox && 
+            ((VBox) node).getStyleClass().contains("pause-menu"));
 
         VBox pauseMenu = new VBox(10);
         pauseMenu.getStyleClass().add("pause-menu");
@@ -361,29 +376,24 @@ public class LevelScreen {
 
         pauseMenu.getChildren().addAll(pauseLabel, resumeButton, mainMenuButton);
 
-        StackPane root = (StackPane) primaryStage.getScene().getRoot();
         root.getChildren().add(pauseMenu);
 
         resumeButton.setOnAction(e -> {
             root.getChildren().remove(pauseMenu);
             isPaused = false;
-            movementTimeline.play();
-            mouthAnimationTimeline.play();
+            if (movementTimeline != null) {
+                movementTimeline.play();
+            }
+            if (mouthAnimationTimeline != null) {
+                mouthAnimationTimeline.play();
+            }
         });
 
         mainMenuButton.setOnAction(e -> {
             root.getChildren().remove(pauseMenu);
             isPaused = false;
             stopMovementTimeline();
-            // Reset level data
-            levelData = null;
-            playerRow = 0;
-            playerCol = 0;
-            playerDirection = "RIGHT";
-            pacmanImageCounter = 1;
-            point=0;
-            key=false;
-            // Return to main menu
+            resetLevel();
             if (returnToMenuCallback != null) {
                 returnToMenuCallback.run();
             }
@@ -426,14 +436,7 @@ public class LevelScreen {
             root.getChildren().remove(gameOverMenu);
             isPaused = false;
             stopMovementTimeline();
-            // Reset level data
-            levelData = null;
-            playerRow = 0;
-            playerCol = 0;
-            playerDirection = "RIGHT";
-            pacmanImageCounter = 1;
-            point = 0;
-            key = false;
+            resetLevel();
             loadLevel(primaryStage, levelName); // Reload the current level
         });
 
@@ -441,12 +444,7 @@ public class LevelScreen {
             root.getChildren().remove(gameOverMenu);
             isPaused = false;
             stopMovementTimeline();
-            // Reset level data
-            levelData = null;
-            playerRow = 0;
-            playerCol = 0;
-            playerDirection = "RIGHT";
-            pacmanImageCounter = 1;
+            resetLevel();
             if (returnToMenuCallback != null) {
                 returnToMenuCallback.run();
             }
@@ -572,14 +570,7 @@ public class LevelScreen {
             root.getChildren().remove(youWinMenu);
             isPaused = false;
             stopMovementTimeline();
-            // Reset level data
-            levelData = null;
-            playerRow = 0;
-            playerCol = 0;
-            playerDirection = "RIGHT";
-            pacmanImageCounter = 1;
-            point = 0;
-            key = false;
+            resetLevel();
             loadLevel(primaryStage, levelName); // Reload the current level
         });
 
@@ -587,17 +578,22 @@ public class LevelScreen {
             root.getChildren().remove(youWinMenu);
             isPaused = false;
             stopMovementTimeline();
-            // Reset level data
-            levelData = null;
-            playerRow = 0;
-            playerCol = 0;
-            playerDirection = "RIGHT";
-            pacmanImageCounter = 1;
-            point = 0;
-            key = false;
+            resetLevel();
             if (returnToMenuCallback != null) {
                 returnToMenuCallback.run();
             }
         });
+    }
+
+    public void resetLevel(){
+        // Reset level data
+        levelData = null;
+        playerRow = 0;
+        playerCol = 0;
+        playerDirection = "RIGHT";
+        pacmanImageCounter = 1;
+        point = 0;
+        key = false;
+        isGameEndMenuShown = false;
     }
 }
