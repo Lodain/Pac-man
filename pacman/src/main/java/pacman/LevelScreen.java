@@ -404,13 +404,16 @@ public class LevelScreen {
         Label gameOverLabel = new Label("GAME OVER");
         gameOverLabel.getStyleClass().add("pause-label"); // Reuse pause label styling
 
+        Label scoreLabel = new Label("Score: " + point);
+        scoreLabel.getStyleClass().add("score-label");
+
         Button playAgainButton = new Button("Play Again");
         Button mainMenuButton = new Button("Main Menu");
 
         playAgainButton.getStyleClass().add("pause-menu-button");
         mainMenuButton.getStyleClass().add("pause-menu-button");
 
-        gameOverMenu.getChildren().addAll(gameOverLabel, playAgainButton, mainMenuButton);
+        gameOverMenu.getChildren().addAll(gameOverLabel, scoreLabel, playAgainButton, mainMenuButton);
 
         // Add menu to the game screen
         StackPane root = (StackPane) primaryStage.getScene().getRoot();
@@ -427,8 +430,8 @@ public class LevelScreen {
             playerCol = 0;
             playerDirection = "RIGHT";
             pacmanImageCounter = 1;
-            point=0;
-            key=false;
+            point = 0;
+            key = false;
             loadLevel(primaryStage, levelName); // Reload the current level
         });
 
@@ -547,13 +550,16 @@ public class LevelScreen {
         Label youWinLabel = new Label("YOU WIN");
         youWinLabel.getStyleClass().add("win-label"); // New style for win label
 
+        Label scoreLabel = new Label("Score: " + point);
+        scoreLabel.getStyleClass().add("score-label");
+
         Button playAgainButton = new Button("Play Again");
         Button mainMenuButton = new Button("Main Menu");
 
         playAgainButton.getStyleClass().add("pause-menu-button");
         mainMenuButton.getStyleClass().add("pause-menu-button");
 
-        youWinMenu.getChildren().addAll(youWinLabel, playAgainButton, mainMenuButton);
+        youWinMenu.getChildren().addAll(youWinLabel, scoreLabel, playAgainButton, mainMenuButton);
 
         // Add menu to the game screen
         StackPane root = (StackPane) primaryStage.getScene().getRoot();

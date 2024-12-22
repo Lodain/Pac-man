@@ -121,3 +121,10 @@
     -fx-font-size: 32;
     -fx-font-weight: bold;
 }
+
+/* Style for score label */
+.score-label {
+    -fx-text-fill: yellow;
+    -fx-font-size: 20px;
+    -fx-padding: 10;
+}
