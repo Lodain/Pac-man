@@ -20,12 +20,16 @@ public class App extends Application {
 
         levelScreen.setReturnToMenuCallback(() -> {
             startScreen.show(primaryStage, 
-                () -> levelSelectScreen.show(primaryStage), 
+                () -> levelSelectScreen.show(primaryStage, this::showStartScreen), 
                 this::handleOptionsButton);
         });
 
+        showStartScreen();
+    }
+
+    private void showStartScreen() {
         startScreen.show(primaryStage, 
-            () -> levelSelectScreen.show(primaryStage), 
+            () -> levelSelectScreen.show(primaryStage, this::showStartScreen), 
             this::handleOptionsButton);
     }
 
@@ -33,7 +37,7 @@ public class App extends Application {
         optionsScreen.show(this.primaryStage, () -> {
             levelScreen.setSpeed(optionsScreen.getSelectedSpeed());
             startScreen.show(this.primaryStage, 
-                () -> levelSelectScreen.show(this.primaryStage), 
+                () -> levelSelectScreen.show(this.primaryStage, this::showStartScreen), 
                 () -> handleOptionsButton());
         });
     }

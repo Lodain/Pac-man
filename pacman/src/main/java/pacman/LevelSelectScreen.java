@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.function.Consumer;
 
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -17,7 +18,7 @@ public class LevelSelectScreen {
         this.levelSelectedCallback = callback;
     }
 
-    public void show(Stage primaryStage) {
+    public void show(Stage primaryStage, Runnable onBack) {
         LevelReader levelReader = new LevelReader();
         List<String> levels = levelReader.getAvailableLevels();
 
@@ -33,8 +34,11 @@ public class LevelSelectScreen {
             }
         });
 
+        Button backButton = new Button("Back");
+        backButton.setOnAction(event -> onBack.run());
+
         VBox layout = new VBox(10);
-        layout.getChildren().add(levelListView);
+        layout.getChildren().addAll(levelListView, backButton);
 
         Scene levelScene = new Scene(layout, 700, 700);
         levelScene.getStylesheets().add(getClass().getResource("/pacman/style/startScreen.css").toExternalForm());
