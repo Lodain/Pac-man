@@ -11,10 +11,20 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+/**
+ * Screen for configuring game options.
+ * Handles game speed settings.
+ */
 public class OptionsScreen {
 
-    private double selectedSpeed = 0.3; // Default speed
+    /** Default game speed */
+    private double selectedSpeed = 0.3;
 
+    /**
+     * Displays the options screen.
+     * @param primaryStage The primary stage
+     * @param onBack Callback for returning to previous screen
+     */
     public void show(Stage primaryStage, Runnable onBack) {
         // Create UI elements
         Label speedLabel = new Label("Game Speed");
@@ -60,6 +70,10 @@ public class OptionsScreen {
         primaryStage.setScene(scene);
     }
 
+    /**
+     * Gets the currently selected game speed.
+     * @return The selected speed value
+     */
     public double getSelectedSpeed() {
         return selectedSpeed;
     }

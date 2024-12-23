@@ -17,15 +17,25 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+/**
+ * Screen for creating custom Pacman game levels.
+ * Provides a grid-based level editor with various game elements.
+ */
 public class CreateLevelScreen {
+    /** Size of each tile in pixels */
     private static final int TILE_SIZE = 40;
+    /** Grid representation of the level */
     private char[][] levelGrid;
+    /** Width of the level grid */
     private int gridWidth;
+    /** Height of the level grid */
     private int gridHeight;
-    private char selectedTile = 'W'; // Default selected tile
+    /** Currently selected tile type */
+    private char selectedTile = 'W';
+    /** GridPane containing the level layout */
     private GridPane gameGrid;
 
-    // Load images
+    /** Game asset images */
     private final Image wallImage = new Image(getClass().getResourceAsStream("/pacman/images/wall.png"));
     private final Image gateImage = new Image(getClass().getResourceAsStream("/pacman/images/gate.png"));
     private final Image keyImage = new Image(getClass().getResourceAsStream("/pacman/images/key.png"));
@@ -34,6 +44,11 @@ public class CreateLevelScreen {
     private final Image ghostImage = new Image(getClass().getResourceAsStream("/pacman/images/ghosts/green.png"));
     private final Image emptyImage = new Image(getClass().getResourceAsStream("/pacman/images/empty.png"));
 
+    /**
+     * Displays the level creation screen.
+     * @param primaryStage The primary stage
+     * @param onBack Callback for returning to previous screen
+     */
     public void show(Stage primaryStage, Runnable onBack) {
         VBox layout = new VBox(10);
         layout.getStyleClass().add("create-level-layout");
@@ -131,6 +146,9 @@ public class CreateLevelScreen {
         primaryStage.setScene(scene);
     }
 
+    /**
+     * Creates the level grid with specified dimensions.
+     */
     private void createGrid() {
         gameGrid.getChildren().clear();
         levelGrid = new char[gridHeight][gridWidth];
@@ -177,6 +195,12 @@ public class CreateLevelScreen {
         }
     }
 
+    /**
+     * Creates a button for selecting a tile type.
+     * @param container Container to add the button to
+     * @param image Image for the tile
+     * @param tileType Character representing the tile type
+     */
     private void createTileButton(HBox container, Image image, char tileType) {
         ImageView imageView = new ImageView(image);
         imageView.setFitWidth(TILE_SIZE);

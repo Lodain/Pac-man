@@ -7,8 +7,17 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+/**
+ * Initial game screen showing title and main menu options.
+ */
 public class StartScreen {
 
+    /**
+     * Displays the start screen with play and options buttons.
+     * @param primaryStage The primary stage
+     * @param onPlay Callback for when Play button is clicked
+     * @param onOptions Callback for when Options button is clicked
+     */
     public void show(Stage primaryStage, Runnable onPlay, Runnable onOptions) {
         // Create title image
         Image titleImage = new Image(getClass().getResourceAsStream("/pacman/images/title.png"));

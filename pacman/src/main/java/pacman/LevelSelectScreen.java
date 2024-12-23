@@ -20,14 +20,27 @@ import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
 import pacman.entities.LevelReader;
 
+/**
+ * Screen for selecting levels to play.
+ * Provides options to select, import, create, and delete levels.
+ */
 public class LevelSelectScreen {
 
+    /** Callback for when a level is selected */
     private Consumer<String> levelSelectedCallback;
 
+    /**
+     * Sets the callback for level selection.
+     * @param callback Callback to execute when a level is selected
+     */
     public void setLevelSelectedCallback(Consumer<String> callback) {
         this.levelSelectedCallback = callback;
     }
 
+    /**
+     * Displays the level selection screen.
+     * @param primaryStage The primary stage
+     */
     public void show(Stage primaryStage) {
         LevelReader levelReader = new LevelReader();
         List<String> levels = levelReader.getAvailableLevels();

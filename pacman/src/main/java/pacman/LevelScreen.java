@@ -25,21 +25,41 @@ import pacman.entities.Ghost;
 import pacman.entities.LevelReader;
 import pacman.entities.Movement;
 
+/**
+ * Main game screen where the gameplay occurs.
+ * Handles game logic, player movement, ghost movement, and collision detection.
+ */
 public class LevelScreen {
 
+    /** Size of each game tile */
     private static final int TILE_SIZE = 40;
-    private int playerRow, playerCol;
+    /** Current player position - row */
+    private int playerRow;
+    /** Current player position - column */
+    private int playerCol;
+    /** Current player direction */
     private String playerDirection = "RIGHT";
+    /** Current level data */
     private char[][] levelData = null;
+    /** Movement timeline */
     private Timeline movementTimeline;
+    /** Mouth animation timeline */
     private Timeline mouthAnimationTimeline;
+    /** Whether the game is paused */
     private boolean isPaused = false;
+    /** Pacman image counter */
     private int pacmanImageCounter = 1;
+    /** Player and ghost speed */
     private double speed = 0.3;
+    /** List of ghosts that are currently in the level */
     private final List<Ghost> ghosts = new ArrayList<>();
+    /** matrix with all the ghosts in the level */
     private char[][] ghostGrid = null;
+    /** Primary stage */
     private Stage primaryStage;
+    /** Current level name */
     private String levelName;
+    /** Callback for returning to main menu */
     private Runnable returnToMenuCallback;
 
     private int point=0;
@@ -63,11 +83,15 @@ public class LevelScreen {
 
     private boolean isGameEndMenuShown = false;
 
+    /**
+     * Loads the specified level and initializes the game screen.
+     * @param primaryStage The primary stage for the application
+     * @param levelName The name of the level to load
+     */
     public void loadLevel(Stage primaryStage, String levelName) {
         this.primaryStage = primaryStage;
         this.levelName = levelName;
         
-        // Add debug check
         if (levelName == null) {
             System.err.println("Level name is null!");
             return;
@@ -293,6 +317,11 @@ public class LevelScreen {
         }
     }
 
+    /**
+     * Moves the player character based on current direction.
+     * @param gridPane The game grid
+     * @param levelData Current level data
+     */
     private void movePlayer(GridPane gridPane, char[][] levelData) {
         boolean move = false;
         try {
