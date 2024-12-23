@@ -1,13 +1,22 @@
 package pacman.entities;
 
+/**
+ * Class for handling movement logic
+ * This class provides methods to check if movements are valid based on tile types
+ */
 public final class Movement {
     
     /**
-     * Checks if a movement is valid based on the tile type
+     * Checks if a movement is valid based on the tile type.
      * 
      * @param c The character representing the tile where the player is trying to move
-     * @return 1 if movement is valid, 0 if movement is invalid, 2 the player is in a ghost, 
-     * 3 the player is in a key, 4 the player is in a gate, 5 the player is in a point
+     * @return Movement status code:
+     *         0 - Invalid movement (wall)
+     *         1 - Valid movement (empty space)
+     *         2 - Ghost collision
+     *         3 - Key pickup
+     *         4 - Gate interaction
+     *         5 - Point pickup
      */
     public static int checkMovement(char c){
         switch(c){

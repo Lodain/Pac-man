@@ -6,18 +6,20 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
+/**
+ * Handles reading and managing level files for the Pacman game.
+ * This class provides functionality to load level data from files and manage available levels.
+ */
 public class LevelReader {
 
+    /** Directory path where level files are stored */
     private static final String LEVELS_DIRECTORY = "src/main/resources/pacman/levels";
-    private static final String[] GHOST_IMAGES = {
-        "/pacman/images/ghosts/red.png",
-        "/pacman/images/ghosts/blue.png",
-        "/pacman/images/ghosts/pink.png",
-        "/pacman/images/ghosts/orange.png"
-    };
-
+    
+    /**
+     * Gets a list of all available level files.
+     * @return List of level file names
+     */
     public List<String> getAvailableLevels() {
         List<String> levels = new ArrayList<>();
         File directory = new File(LEVELS_DIRECTORY);
@@ -33,6 +35,11 @@ public class LevelReader {
         return levels;
     }
 
+    /**
+     * Reads level data from a specified file.
+     * @param levelFileName Name of the level file to read
+     * @return a char matrix containing the level data
+     */
     public char[][] readLevelData(String levelFileName) {
         File levelFile = new File(LEVELS_DIRECTORY, levelFileName);
         List<char[]> levelLines = new ArrayList<>();
@@ -43,15 +50,10 @@ public class LevelReader {
                 levelLines.add(line.toCharArray());
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("Error reading level file: " + e.getMessage());
         }
 
         return levelLines.toArray(new char[0][]);
     }
 
-    public static String getRandomGhostImage() {
-        Random random = new Random();
-        int index = random.nextInt(GHOST_IMAGES.length);
-        return GHOST_IMAGES[index];
-    }
 }
