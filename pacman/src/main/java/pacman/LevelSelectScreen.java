@@ -5,10 +5,14 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
@@ -89,8 +93,35 @@ public class LevelSelectScreen {
             }
         });
 
+        Button deleteLevelButton = new Button("Delete Level");
+        deleteLevelButton.getStyleClass().add("delete-button");
+        deleteLevelButton.setOnAction(event -> {
+            String selectedLevel = levelListView.getSelectionModel().getSelectedItem();
+            if (selectedLevel != null) {
+                Alert confirmDialog = new Alert(AlertType.CONFIRMATION);
+                confirmDialog.setTitle("Delete Level");
+                confirmDialog.setHeaderText("Delete " + selectedLevel);
+                confirmDialog.setContentText("Are you sure you want to delete this level?");
+                
+                Optional<ButtonType> result = confirmDialog.showAndWait();
+                if (result.isPresent() && result.get() == ButtonType.OK) {
+                    File levelFile = new File("src/main/resources/pacman/levels/" + selectedLevel);
+                    if (levelFile.delete()) {
+                        levelListView.getItems().remove(selectedLevel);
+                    } else {
+                        Alert errorAlert = new Alert(AlertType.ERROR);
+                        errorAlert.setTitle("Error");
+                        errorAlert.setHeaderText("Delete Failed");
+                        errorAlert.setContentText("Could not delete the level file.");
+                        errorAlert.showAndWait();
+                    }
+                }
+            }
+        });
+
         VBox layout = new VBox(15);
-        layout.getChildren().addAll(levelListView, createLevelButton, importLevelButton, backButton);
+        layout.getChildren().addAll(levelListView, createLevelButton, importLevelButton, 
+                                  deleteLevelButton, backButton);
         layout.getStyleClass().add("level-selector-layout");
 
         Scene levelScene = new Scene(layout, 700, 700);
