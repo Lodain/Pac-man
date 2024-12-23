@@ -19,20 +19,27 @@ import javafx.stage.Stage;
 
 /**
  * Screen for creating custom Pacman game levels.
- * Provides a grid-based level editor with various game elements.
+ * This class provides a visual level editor where users can:
+ * - Set level dimensions
+ * - Place game elements (walls, points, ghosts, etc.)
+ * - Save custom levels to files
  */
 public class CreateLevelScreen {
     /** Size of each tile in pixels */
     private static final int TILE_SIZE = 40;
-    /** Grid representation of the level */
+    
+    /** matrix storing the level layout where each char represents a game element:
+     * W = Wall, G = Gate, K = Key, o = Point, P = Player, C = Ghost, . = Empty */
     private char[][] levelGrid;
-    /** Width of the level grid */
+    
+    /** Width and height of the level grid in tiles */
     private int gridWidth;
-    /** Height of the level grid */
     private int gridHeight;
-    /** Currently selected tile type */
+    
+    /** Currently selected tile type to place on the grid */
     private char selectedTile = 'W';
-    /** GridPane containing the level layout */
+    
+    /** JavaFX GridPane that displays the visual level layout */
     private GridPane gameGrid;
 
     /** Game asset images */
@@ -45,9 +52,13 @@ public class CreateLevelScreen {
     private final Image emptyImage = new Image(getClass().getResourceAsStream("/pacman/images/empty.png"));
 
     /**
-     * Displays the level creation screen.
-     * @param primaryStage The primary stage
-     * @param onBack Callback for returning to previous screen
+     * Displays the level creation interface with the following components:
+     * - Text field for level name
+     * - Width and height input fields
+     * - Grid creation button
+     * - Editable game grid
+     * - Toolbar with placeable game elements
+     * - Save and back buttons
      */
     public void show(Stage primaryStage, Runnable onBack) {
         VBox layout = new VBox(10);
@@ -214,6 +225,10 @@ public class CreateLevelScreen {
         container.getChildren().add(tileButton);
     }
 
+    /**
+     * Places the currently selected tile type at the specified grid position.
+     * Updates both the internal levelGrid array and the visual representation.
+     */
     private void placeTile(int row, int col) {
         if (levelGrid != null) {
             levelGrid[row][col] = selectedTile;
@@ -234,6 +249,10 @@ public class CreateLevelScreen {
         }
     }
 
+    /**
+     * Returns the appropriate image for each tile type.
+     * Maps character representations (W,G,K,etc.) to their visual images.
+     */
     private Image getTileImage(char tile) {
         switch (tile) {
             case 'W': return wallImage;
@@ -246,6 +265,10 @@ public class CreateLevelScreen {
         }
     }
 
+    /**
+     * Saves the current level to a file.
+     * @param levelName The name of the level to save, if already exists, it will be overwritten
+     */
     private void saveLevel(String levelName) {
         try (FileWriter writer = new FileWriter("src/main/resources/pacman/levels/" + levelName + ".txt")) {
             // Write dimensions in the first row
