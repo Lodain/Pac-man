@@ -41,6 +41,9 @@ public class CreateLevelScreen {
     
     /** JavaFX GridPane that displays the visual level layout */
     private GridPane gameGrid;
+    
+    /** Tracks the current player position [row, col] or null if no player */
+    private int[] playerPosition = null;
 
     /** Game asset images */
     private final Image wallImage = new Image(getClass().getResourceAsStream("/pacman/images/wall.png"));
@@ -50,6 +53,8 @@ public class CreateLevelScreen {
     private final Image playerImage = new Image(getClass().getResourceAsStream("/pacman/images/pacman-right/1.png"));
     private final Image ghostImage = new Image(getClass().getResourceAsStream("/pacman/images/ghosts/green.png"));
     private final Image emptyImage = new Image(getClass().getResourceAsStream("/pacman/images/empty.png"));
+
+    private Button selectedButton = null;
 
     /**
      * Displays the level creation interface with the following components:
@@ -161,6 +166,7 @@ public class CreateLevelScreen {
      * Creates the level grid with specified dimensions.
      */
     private void createGrid() {
+        playerPosition = null;
         gameGrid.getChildren().clear();
         levelGrid = new char[gridHeight][gridWidth];
 
@@ -220,7 +226,20 @@ public class CreateLevelScreen {
         Button tileButton = new Button();
         tileButton.setGraphic(imageView);
         tileButton.getStyleClass().add("tile-button");
-        tileButton.setOnAction(e -> selectedTile = tileType);
+        tileButton.setOnAction(e -> {
+            if (selectedButton != null) {
+                selectedButton.getStyleClass().remove("selected");
+            }
+            selectedButton = tileButton;
+            tileButton.getStyleClass().add("selected");
+            selectedTile = tileType;
+        });
+        
+        // Set initial selection for wall tile
+        if (tileType == 'W') {
+            selectedButton = tileButton;
+            tileButton.getStyleClass().add("selected");
+        }
         
         container.getChildren().add(tileButton);
     }
@@ -231,21 +250,26 @@ public class CreateLevelScreen {
      */
     private void placeTile(int row, int col) {
         if (levelGrid != null) {
+            // If trying to place a player
+            if (selectedTile == 'P') {
+                // Remove existing player if there is one
+                if (playerPosition != null) {
+                    // Reset old player position to empty
+                    levelGrid[playerPosition[0]][playerPosition[1]] = '.';
+                    // Update visual for old position
+                    updateTileVisual(playerPosition[0], playerPosition[1], '.');
+                }
+                // Store new player position
+                playerPosition = new int[]{row, col};
+            }
+            // If placing something else where player was, clear player position
+            else if (playerPosition != null && row == playerPosition[0] && col == playerPosition[1]) {
+                playerPosition = null;
+            }
+
+            // Place the new tile
             levelGrid[row][col] = selectedTile;
-            Image tileImage = getTileImage(selectedTile);
-            
-            ImageView tileView = new ImageView(tileImage);
-            tileView.setFitWidth(TILE_SIZE);
-            tileView.setFitHeight(TILE_SIZE);
-            
-            // Find the StackPane at the specified position and update its content
-            gameGrid.getChildren().stream()
-                .filter(node -> GridPane.getRowIndex(node) == row && GridPane.getColumnIndex(node) == col)
-                .findFirst()
-                .ifPresent(cell -> {
-                    ((StackPane) cell).getChildren().clear();
-                    ((StackPane) cell).getChildren().add(tileView);
-                });
+            updateTileVisual(row, col, selectedTile);
         }
     }
 
@@ -284,5 +308,21 @@ public class CreateLevelScreen {
         } catch (IOException e) {
             System.out.println("Error saving level: " + e.getMessage());
         }
+    }
+
+    // Helper method to update the visual representation of a tile
+    private void updateTileVisual(int row, int col, char tileType) {
+        Image tileImage = getTileImage(tileType);
+        ImageView tileView = new ImageView(tileImage);
+        tileView.setFitWidth(TILE_SIZE);
+        tileView.setFitHeight(TILE_SIZE);
+        
+        gameGrid.getChildren().stream()
+            .filter(node -> GridPane.getRowIndex(node) == row && GridPane.getColumnIndex(node) == col)
+            .findFirst()
+            .ifPresent(cell -> {
+                ((StackPane) cell).getChildren().clear();
+                ((StackPane) cell).getChildren().add(tileView);
+            });
     }
 }
