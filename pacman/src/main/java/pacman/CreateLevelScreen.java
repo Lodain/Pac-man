@@ -94,13 +94,13 @@ public class CreateLevelScreen {
         assetContainer.getChildren().addAll(toggleAssetsButton, assetBox);
 
         // Create tile buttons
-        createTileButton(assetBox, wallImage, 'W', "Wall");
-        createTileButton(assetBox, gateImage, 'G', "Gate");
-        createTileButton(assetBox, keyImage, 'K', "Key");
-        createTileButton(assetBox, pointImage, 'o', "Point");
-        createTileButton(assetBox, playerImage, 'P', "Player");
-        createTileButton(assetBox, ghostImage, 'C', "Ghost");
-        createTileButton(assetBox, emptyImage, '.', "Empty");
+        createTileButton(assetBox, wallImage, 'W');
+        createTileButton(assetBox, gateImage, 'G');
+        createTileButton(assetBox, keyImage, 'K');
+        createTileButton(assetBox, pointImage, 'o');
+        createTileButton(assetBox, playerImage, 'P');
+        createTileButton(assetBox, ghostImage, 'C');
+        createTileButton(assetBox, emptyImage, '.');
 
         createGridButton.setOnAction(e -> {
             try {
@@ -177,7 +177,7 @@ public class CreateLevelScreen {
         }
     }
 
-    private void createTileButton(HBox container, Image image, char tileType, String tooltip) {
+    private void createTileButton(HBox container, Image image, char tileType) {
         ImageView imageView = new ImageView(image);
         imageView.setFitWidth(TILE_SIZE);
         imageView.setFitHeight(TILE_SIZE);
@@ -235,7 +235,7 @@ public class CreateLevelScreen {
                 writer.write("\n");
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("Error saving level: " + e.getMessage());
         }
     }
 }
