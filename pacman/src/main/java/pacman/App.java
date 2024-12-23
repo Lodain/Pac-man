@@ -15,14 +15,11 @@ public class App extends Application {
     public void start(Stage primaryStage) {
         this.primaryStage = primaryStage;
         levelSelectScreen.setLevelSelectedCallback(selectedLevel -> {
+            levelScreen.setSpeed(optionsScreen.getSelectedSpeed());
             levelScreen.loadLevel(primaryStage, selectedLevel);
         });
 
-        levelScreen.setReturnToMenuCallback(() -> {
-            startScreen.show(primaryStage, 
-                () -> levelSelectScreen.show(primaryStage), 
-                this::handleOptionsButton);
-        });
+        levelScreen.setReturnToMenuCallback(() -> showStartScreen());
 
         showStartScreen();
     }
@@ -30,16 +27,7 @@ public class App extends Application {
     private void showStartScreen() {
         startScreen.show(primaryStage, 
             () -> levelSelectScreen.show(primaryStage), 
-            this::handleOptionsButton);
-    }
-
-    private void handleOptionsButton() {
-        optionsScreen.show(this.primaryStage, () -> {
-            levelScreen.setSpeed(optionsScreen.getSelectedSpeed());
-            startScreen.show(this.primaryStage, 
-                () -> levelSelectScreen.show(this.primaryStage), 
-                () -> handleOptionsButton());
-        });
+            () -> optionsScreen.show(primaryStage, this::showStartScreen));
     }
 
     public static void main(String[] args) {

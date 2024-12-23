@@ -14,11 +14,8 @@ import javafx.stage.Stage;
 public class OptionsScreen {
 
     private double selectedSpeed = 0.3; // Default speed
-    private Runnable onBack;
 
     public void show(Stage primaryStage, Runnable onBack) {
-        this.onBack = onBack;
-
         // Create UI elements
         Label speedLabel = new Label("Game Speed");
         Label fastLabel = new Label("Fast");
