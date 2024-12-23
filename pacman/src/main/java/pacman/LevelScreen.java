@@ -36,7 +36,7 @@ public class LevelScreen {
     private boolean isPaused = false;
     private int pacmanImageCounter = 1;
     private double speed = 0.3;
-    private List<Ghost> ghosts = new ArrayList<>();
+    private final List<Ghost> ghosts = new ArrayList<>();
     private char[][] ghostGrid = null;
     private Stage primaryStage;
     private String levelName;
@@ -289,8 +289,7 @@ public class LevelScreen {
             primaryStage.setScene(gameScene);
 
         } catch (Exception e) {
-            e.printStackTrace();
-            System.err.println("Error loading level: " + e.getMessage());
+            System.out.println("Error loading level: " + e.getMessage());
         }
     }
 
@@ -351,8 +350,7 @@ public class LevelScreen {
                 playerCol = newCol;
 
                 // Add player at new position
-                Image playerImage = new Image(getClass().getResource("/pacman/images/pacman-" + 
-                                           playerDirection.toLowerCase() + "/" + pacmanImageCounter + ".png").toExternalForm());
+                Image playerImage = new Image(getClass().getResource("/pacman/images/pacman-" + playerDirection.toLowerCase() + "/" + pacmanImageCounter + ".png").toExternalForm());
                 ImageView playerView = new ImageView(playerImage);
                 playerView.setFitWidth(TILE_SIZE);
                 playerView.setFitHeight(TILE_SIZE);
@@ -364,8 +362,7 @@ public class LevelScreen {
                 pointsLabel.setText("Points: " + point);
             }
         } catch (Exception e) {
-            e.printStackTrace();
-            System.err.println("Error moving player: " + e.getMessage());
+            System.out.println("Error moving player: " + e.getMessage());
         }
     }
 
@@ -432,10 +429,6 @@ public class LevelScreen {
         });
     }
 
-    private void handleOptionsButton() {
-        System.out.println("Options button clicked!");
-    }
-
     private void showGameOver() {
         isGameEndMenuShown = true;
         isPaused = true;
@@ -493,8 +486,7 @@ public class LevelScreen {
         });
 
         // Add new player image with updated direction
-        Image playerImage = new Image(getClass().getResource("/pacman/images/pacman-" + 
-                                   playerDirection.toLowerCase() + "/" + pacmanImageCounter + ".png").toExternalForm());
+        Image playerImage = new Image(getClass().getResource("/pacman/images/pacman-" + playerDirection.toLowerCase() + "/" + pacmanImageCounter + ".png").toExternalForm());
         ImageView playerView = new ImageView(playerImage);
         playerView.setFitWidth(TILE_SIZE);
         playerView.setFitHeight(TILE_SIZE);
