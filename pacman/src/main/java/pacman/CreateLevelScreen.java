@@ -65,6 +65,8 @@ public class CreateLevelScreen {
      * - Editable game grid
      * - Toolbar with placeable game elements
      * - Save and back buttons
+     * @param primaryStage The main stage of the application
+     * @param onBack A Runnable to execute when the back button is pressed
      */
     public void show(Stage primaryStage, Runnable onBack) {
         VBox layout = new VBox(10);
@@ -83,12 +85,12 @@ public class CreateLevelScreen {
         Button createGridButton = new Button("Create Grid");
         dimensionBox.getChildren().addAll(widthField, heightField, createGridButton);
 
-        // Create a StackPane to hold the game grid with maximum height
+        // StackPane to hold the game grid 
         StackPane gridContainer = new StackPane();
         gridContainer.setPrefSize(700, 400);
         gridContainer.setMaxSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
-        gridContainer.setMinHeight(200); // Set minimum height
-        gridContainer.setMaxHeight(400); // Set maximum height
+        gridContainer.setMinHeight(200); // minimum height
+        gridContainer.setMaxHeight(400); // maximum height
         
         // Game grid
         gameGrid = new GridPane();
@@ -100,11 +102,11 @@ public class CreateLevelScreen {
         gridContainer.getChildren().add(gameGrid);
         StackPane.setAlignment(gameGrid, Pos.CENTER);
 
-        // Create a container for the asset toolbar that can be collapsed
+        //container for the asset toolbar
         VBox assetContainer = new VBox(5);
         assetContainer.setMinHeight(80);
         
-        // Create toggle button for assets
+        // toggle button for assets
         Button toggleAssetsButton = new Button("▼ Assets");
         toggleAssetsButton.getStyleClass().add("toggle-button");
         
@@ -116,7 +118,7 @@ public class CreateLevelScreen {
         assetBox.setAlignment(Pos.CENTER);
         assetBox.setVisible(true); // Initially visible
 
-        // Add toggle functionality
+        //toggle functionality
         toggleAssetsButton.setOnAction(e -> {
             assetBox.setVisible(!assetBox.isVisible());
             toggleAssetsButton.setText(assetBox.isVisible() ? "▼ Assets" : "▲ Assets");
@@ -125,7 +127,7 @@ public class CreateLevelScreen {
         // Add components to asset container
         assetContainer.getChildren().addAll(toggleAssetsButton, assetBox);
 
-        // Create tile buttons
+        // tile buttons
         createTileButton(assetBox, wallImage, 'W');
         createTileButton(assetBox, gateImage, 'G');
         createTileButton(assetBox, keyImage, 'K');
@@ -171,9 +173,9 @@ public class CreateLevelScreen {
         gameGrid.getChildren().clear();
         levelGrid = new char[gridHeight][gridWidth];
 
-        // Calculate the scaling factor based on grid size
-        double maxWidth = 600; // Maximum width for the game area
-        double maxHeight = 400; // Slightly smaller max height to accommodate UI elements
+        // Calculate the scaling based on grid size
+        double maxWidth = 600; // max width for the game area
+        double maxHeight = 400; // max height for the game area
         
         int totalWidth = gridWidth * TILE_SIZE;
         int totalHeight = gridHeight * TILE_SIZE;
@@ -311,7 +313,12 @@ public class CreateLevelScreen {
         }
     }
 
-    // Helper method to update the visual representation of a tile
+    /**
+     * Updates the visual representation of a tile.
+     * @param row The row index of the tile
+     * @param col The column index of the tile
+     * @param tileType The character representing the tile type
+     */
     private void updateTileVisual(int row, int col, char tileType) {
         Image tileImage = getTileImage(tileType);
         ImageView tileView = new ImageView(tileImage);
