@@ -6,6 +6,8 @@ import java.io.IOException;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
@@ -297,6 +299,16 @@ public class CreateLevelScreen {
      * @param levelName The name of the level to save, if already exists, it will be overwritten
      */
     private void saveLevel(String levelName) {
+        // Check if there's exactly one player
+        if (playerPosition == null) {
+            Alert alert = new Alert(AlertType.ERROR);
+            alert.setTitle("Save Error");
+            alert.setHeaderText("Invalid Level");
+            alert.setContentText("The level must contain exactly one player.");
+            alert.showAndWait();
+            return;
+        }
+
         try (FileWriter writer = new FileWriter("src/main/resources/pacman/levels/" + levelName + ".txt")) {
             // Write dimensions in the first row
             writer.write(gridHeight + " " + gridWidth + "\n");
