@@ -51,9 +51,11 @@ public class LevelSelectScreen {
      * @param primaryStage The main application window
      */
     public void show(Stage primaryStage) {
+        // Get list of available levels using LevelReader
         LevelReader levelReader = new LevelReader();
         List<String> levels = levelReader.getAvailableLevels();
 
+        // Create and populate the level list view, removing .txt extensions
         ListView<String> levelListView = new ListView<>();
         levels.forEach(level -> {
             String displayName = level.replace(".txt", "");
@@ -61,15 +63,18 @@ public class LevelSelectScreen {
         });
         levelListView.getStyleClass().add("level-list-view");
 
+        // Handle double-click on level selection
         levelListView.setOnMouseClicked(event -> {
             if (event.getClickCount() == 2) {
                 String selectedLevel = levelListView.getSelectionModel().getSelectedItem();
                 if (selectedLevel != null && levelSelectedCallback != null) {
+                    // Add .txt back when loading the level
                     levelSelectedCallback.accept(selectedLevel + ".txt");
                 }
             }
         });
 
+        // Back button - returns to start screen
         Button backButton = new Button("Back");
         backButton.setOnAction(event -> {
             StartScreen startScreen = new StartScreen();
@@ -81,35 +86,39 @@ public class LevelSelectScreen {
                 });
         });
 
+        // Create Level button - opens level editor
         Button createLevelButton = new Button("Create Level");
         createLevelButton.setOnAction(event -> {
             CreateLevelScreen createLevelScreen = new CreateLevelScreen();
             createLevelScreen.show(primaryStage, () -> show(primaryStage));
         });
 
+        // Import Level button - allows importing external level files
         Button importLevelButton = new Button("Import Level");
         importLevelButton.setOnAction(event -> {
+            // Configure file chooser for .txt files
             FileChooser fileChooser = new FileChooser();
             fileChooser.setTitle("Select Level File");
             fileChooser.getExtensionFilters().add(
                 new ExtensionFilter("Text Files", "*.txt")
             );
 
+            // Handle selected file
             File selectedFile = fileChooser.showOpenDialog(primaryStage);
             if (selectedFile != null) {
                 try {
-                    // Create levels directory if it doesn't exist
+                    // Ensure levels directory exists
                     File levelsDir = new File("src/main/resources/pacman/levels");
                     if (!levelsDir.exists()) {
                         levelsDir.mkdirs();
                     }
 
-                    // Copy file to levels directory
+                    // Copy imported file to levels directory
                     File destFile = new File(levelsDir, selectedFile.getName());
                     Files.copy(selectedFile.toPath(), destFile.toPath(), 
                               StandardCopyOption.REPLACE_EXISTING);
 
-                    // Refresh the list
+                    // Refresh level list
                     levelListView.getItems().clear();
                     levelListView.getItems().addAll(new LevelReader().getAvailableLevels());
                 } catch (IOException e) {
@@ -118,11 +127,13 @@ public class LevelSelectScreen {
             }
         });
 
+        // Delete Level button - removes selected level after confirmation
         Button deleteLevelButton = new Button("Delete Level");
         deleteLevelButton.getStyleClass().add("delete-button");
         deleteLevelButton.setOnAction(event -> {
             String selectedLevel = levelListView.getSelectionModel().getSelectedItem();
             if (selectedLevel != null) {
+                // Show confirmation dialog
                 Alert confirmDialog = new Alert(AlertType.CONFIRMATION);
                 confirmDialog.setTitle("Delete Level");
                 confirmDialog.setHeaderText("Delete " + selectedLevel);
@@ -130,10 +141,12 @@ public class LevelSelectScreen {
                 
                 Optional<ButtonType> result = confirmDialog.showAndWait();
                 if (result.isPresent() && result.get() == ButtonType.OK) {
+                    // Delete the level file and update list if successful
                     File levelFile = new File("src/main/resources/pacman/levels/" + selectedLevel + ".txt");
                     if (levelFile.delete()) {
                         levelListView.getItems().remove(selectedLevel);
                     } else {
+                        // Show error if deletion fails
                         Alert errorAlert = new Alert(AlertType.ERROR);
                         errorAlert.setTitle("Error");
                         errorAlert.setHeaderText("Delete Failed");
@@ -144,14 +157,15 @@ public class LevelSelectScreen {
             }
         });
 
+        // Create layout and add all components
         VBox layout = new VBox(15);
         layout.getChildren().addAll(levelListView, createLevelButton, importLevelButton, 
                                   deleteLevelButton, backButton);
         layout.getStyleClass().add("level-selector-layout");
 
+        // Set up and show the scene
         Scene levelScene = new Scene(layout, 700, 700);
         levelScene.getStylesheets().add(getClass().getResource("/pacman/style/startScreen.css").toExternalForm());
-
         primaryStage.setScene(levelScene);
     }
 }
