@@ -1,9 +1,13 @@
 package pacman;
 
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
@@ -38,8 +42,18 @@ public class StartScreen {
         layout.getStyleClass().add("start-screen");
         layout.getChildren().addAll(titleImageView, playButton, optionsButton);
 
+        // Add author credit
+        Label authorLabel = new Label("by Danilo Spera");
+        authorLabel.getStyleClass().add("author-credit");
+        
+        // Use StackPane to position the credit in bottom-right
+        StackPane root = new StackPane();
+        root.getChildren().addAll(layout, authorLabel);
+        StackPane.setAlignment(authorLabel, Pos.BOTTOM_RIGHT);
+        StackPane.setMargin(authorLabel, new Insets(0, 10, 10, 0));
+
         // Create a scene with the layout
-        Scene scene = new Scene(layout, 700, 700);
+        Scene scene = new Scene(root, 700, 700);
         scene.getStylesheets().add(getClass().getResource("/pacman/style/startScreen.css").toExternalForm());
 
         primaryStage.setTitle("Pacman Game");
