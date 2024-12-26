@@ -26,48 +26,76 @@ import pacman.entities.LevelReader;
 import pacman.entities.Movement;
 
 /**
+ * @author: Danilo Spera
  * Main game screen where the gameplay occurs.
- * Handles game logic, player movement, ghost movement, and collision detection.
+ * Handles game mechanics:
+ * - Player movement and animation
+ * - Ghost movement
+ * - Collision detection
+ * - Score tracking
+ * - Game state (pause, win, lose)
  */
 public class LevelScreen {
 
     /** Size of each game tile */
     private static final int TILE_SIZE = 40;
-    /** Current player position - row */
+
+    /** Current row position of the player */
     private int playerRow;
-    /** Current player position - column */
+
+    /** Current column position of the player */
     private int playerCol;
-    /** Current player direction */
+
+    /** Current direction the player is facing: "UP", "DOWN", "LEFT", "RIGHT" */
     private String playerDirection = "RIGHT";
-    /** Current level data */
+
+    /** matrix storing the level layout where each char represents a game element:
+     * W = Wall, G = Gate, K = Key, o = Point, P = Player, C = Ghost, . = Empty */
     private char[][] levelData = null;
-    /** Movement timeline */
+
+    /** Timeline controlling entity movement speed */
     private Timeline movementTimeline;
-    /** Mouth animation timeline */
+
+    /** Timeline controlling Pacman's mouth animation */
     private Timeline mouthAnimationTimeline;
-    /** Whether the game is paused */
+
+    /** Flag indicating if game is currently paused */
     private boolean isPaused = false;
-    /** Pacman image counter */
+
+    /** Current frame of Pacman's mouth animation (1-3) */
     private int pacmanImageCounter = 1;
-    /** Player and ghost speed */
+
+    /** Movement speed of player and ghosts (lower = faster) */
     private double speed = 0.3;
-    /** List of ghosts that are currently in the level */
+
+    /** List containing all ghost entities in the level */
     private final List<Ghost> ghosts = new ArrayList<>();
+
     /** matrix with all the ghosts in the level */
     private char[][] ghostGrid = null;
-    /** Primary stage */
+
+    /** Reference to the primary stage */
     private Stage primaryStage;
+
     /** Current level name */
     private String levelName;
-    /** Callback for returning to main menu */
+
+    /** Callback to return to main menu */
     private Runnable returnToMenuCallback;
 
-    private int point=0;
-    private boolean key=false;
+    /** Current score */
+    private int point = 0;
 
+    /** Flag indicating if player has collected the key */
+    private boolean key = false;
+
+    /** Label displaying current score */
     private Label pointsLabel;
 
-    // Load images
+    /** Flag indicating if game end menu is currently shown */
+    private boolean isGameEndMenuShown = false;
+
+    /** Images of the game elements */
     Image wallImage = new Image(getClass().getResourceAsStream("/pacman/images/wall.png"));
     Image gateImage = new Image(getClass().getResourceAsStream("/pacman/images/gate.png"));
     Image keyImage = new Image(getClass().getResourceAsStream("/pacman/images/key.png"));
@@ -77,16 +105,16 @@ public class LevelScreen {
     Image ghostImage1 = new Image(getClass().getResourceAsStream("/pacman/images/ghosts/orange.png"));
     Image ghostImage2 = new Image(getClass().getResourceAsStream("/pacman/images/ghosts/pink.png"));
     Image ghostImage3 = new Image(getClass().getResourceAsStream("/pacman/images/ghosts/red.png"));
-    Image emptyImage = new Image(getClass().getResourceAsStream("/pacman/images/empty.png"));
 
+    /** ImageView for the key icon */
     private ImageView keyImageView;
 
-    private boolean isGameEndMenuShown = false;
-
     /**
-     * Loads the specified level and initializes the game screen.
-     * @param primaryStage The primary stage for the application
-     * @param levelName The name of the level to load
+     * Loads and initializes a game level.
+     * Sets up the game board, player position, ghosts, and starts game loops.
+     *
+     * @param primaryStage The primary stage of the application
+     * @param levelName Name of the level file to load
      */
     public void loadLevel(Stage primaryStage, String levelName) {
         this.primaryStage = primaryStage;
@@ -135,8 +163,6 @@ public class LevelScreen {
             // Initialize points label
             pointsLabel = new Label("Points: " + point);
             pointsLabel.getStyleClass().add("points-label");
-
-            
 
             // Create the game board
             for (int row = 0; row < levelData.length; row++) {
@@ -198,7 +224,6 @@ public class LevelScreen {
                             imageView = new ImageView(wallImage);
                             break;
                         default:
-                            imageView = new ImageView(emptyImage);
                             continue;
                     }
                     if (imageView != null) {
@@ -395,6 +420,9 @@ public class LevelScreen {
         }
     }
 
+    /**
+     * Stops all game timelines (movement and animation).
+     */
     private void stopMovementTimeline() {
         if (movementTimeline != null) {
             movementTimeline.stop();
@@ -404,6 +432,9 @@ public class LevelScreen {
         }
     }
 
+    /**
+     * Displays the pause menu and handles pause-related actions.
+     */
     private void showPauseMenu() {
         if (isGameEndMenuShown) return; // Don't show pause menu if game end menu is shown
         
@@ -458,6 +489,9 @@ public class LevelScreen {
         });
     }
 
+    /**
+     * Shows game over screen with final score and replay options.
+     */
     private void showGameOver() {
         isGameEndMenuShown = true;
         isPaused = true;
@@ -505,6 +539,11 @@ public class LevelScreen {
         });
     }
 
+    /**
+     * Updates player's visual representation based on current direction.
+     *
+     * @param gridPane The game's visual grid
+     */
     private void updatePlayerTexture(GridPane gridPane) {
         // Remove current player image
         gridPane.getChildren().removeIf(node -> {
@@ -524,6 +563,11 @@ public class LevelScreen {
         gridPane.add(playerView, playerCol, playerRow);
     }
 
+    /**
+     * Starts Pacman's mouth opening/closing animation.
+     *
+     * @param gridPane The game's visual grid
+     */
     private void startMouthAnimation(GridPane gridPane) {
         mouthAnimationTimeline = new Timeline(
             new KeyFrame(Duration.millis(100), event -> {
@@ -535,6 +579,12 @@ public class LevelScreen {
         mouthAnimationTimeline.play();
     }
 
+    /**
+     * Moves all ghosts in random directions.
+     * Handles collision detection with walls and player.
+     *
+     * @param ghostGridPane The ghost layer visual grid
+     */
     private void moveGhosts(GridPane ghostGridPane) {
         for (Ghost ghost : ghosts) {
             int newRow = ghost.getRow();
@@ -587,18 +637,34 @@ public class LevelScreen {
         }
     }
 
+    /**
+     * Sets callback for returning to main menu.
+     *
+     * @param callback Runnable to execute when returning to menu
+     */
     public void setReturnToMenuCallback(Runnable callback) {
         this.returnToMenuCallback = callback;
     }
 
+    /**
+     * Sets movement speed for player and ghosts.
+     *
+     * @param speed Movement speed (lower = faster)
+     */
     public void setSpeed(double speed) {
         this.speed = speed;
     }
 
+    /**
+     * Updates visibility of key icon based on collection status.
+     */
     private void updateKeyImageVisibility() {
         keyImageView.setVisible(key);
     }
 
+    /**
+     * Shows victory screen with final score and replay options.
+     */
     private void showYouWin() {
         isGameEndMenuShown = true;
         isPaused = true;
@@ -646,7 +712,10 @@ public class LevelScreen {
         });
     }
 
-    public void resetLevel(){
+    /**
+     * Resets all game state variables to initial values.
+     */
+    public void resetLevel() {
         // Reset level data
         levelData = null;
         playerRow = 0;
