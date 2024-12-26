@@ -46,14 +46,17 @@ public class LevelSelectScreen {
         List<String> levels = levelReader.getAvailableLevels();
 
         ListView<String> levelListView = new ListView<>();
-        levelListView.getItems().addAll(levels);
+        levels.forEach(level -> {
+            String displayName = level.replace(".txt", "");
+            levelListView.getItems().add(displayName);
+        });
         levelListView.getStyleClass().add("level-list-view");
 
         levelListView.setOnMouseClicked(event -> {
             if (event.getClickCount() == 2) {
                 String selectedLevel = levelListView.getSelectionModel().getSelectedItem();
                 if (selectedLevel != null && levelSelectedCallback != null) {
-                    levelSelectedCallback.accept(selectedLevel);
+                    levelSelectedCallback.accept(selectedLevel + ".txt");
                 }
             }
         });
@@ -118,7 +121,7 @@ public class LevelSelectScreen {
                 
                 Optional<ButtonType> result = confirmDialog.showAndWait();
                 if (result.isPresent() && result.get() == ButtonType.OK) {
-                    File levelFile = new File("src/main/resources/pacman/levels/" + selectedLevel);
+                    File levelFile = new File("src/main/resources/pacman/levels/" + selectedLevel + ".txt");
                     if (levelFile.delete()) {
                         levelListView.getItems().remove(selectedLevel);
                     } else {
