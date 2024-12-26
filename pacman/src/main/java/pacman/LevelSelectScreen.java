@@ -21,25 +21,34 @@ import javafx.stage.Stage;
 import pacman.entities.LevelReader;
 
 /**
- * Screen for selecting levels to play.
- * Provides options to select, import, create, and delete levels.
+ * @author: Danilo Spera
+ * Screen for selecting and managing game levels.
+ * Provides functionality to:
+ * - Select and play existing levels
+ * - Import custom levels
+ * - Create new levels
+ * - Delete existing levels
  */
 public class LevelSelectScreen {
 
-    /** Callback for when a level is selected */
+    /** Callback function executed when a level is selected */
     private Consumer<String> levelSelectedCallback;
 
     /**
-     * Sets the callback for level selection.
-     * @param callback Callback to execute when a level is selected
+     * Sets the callback function for level selection.
+     * This callback is triggered when a user double-clicks a level.
+     * 
+     * @param callback Function to execute when a level is selected
      */
     public void setLevelSelectedCallback(Consumer<String> callback) {
         this.levelSelectedCallback = callback;
     }
 
     /**
-     * Displays the level selection screen.
-     * @param primaryStage The primary stage
+     * Displays the level selection interface.
+     * Shows a list of available levels and management buttons.
+     * 
+     * @param primaryStage The main application window
      */
     public void show(Stage primaryStage) {
         LevelReader levelReader = new LevelReader();
