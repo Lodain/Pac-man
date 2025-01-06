@@ -1,0 +1,1 @@
+typeSearchIndex = [{"l":"All Classes and Interfaces","u":"allclasses-index.html"},{"p":"pacman","l":"App"},{"p":"pacman","l":"CreateLevelScreen"},{"p":"pacman","l":"LevelScreen"},{"p":"pacman","l":"LevelSelectScreen"},{"p":"pacman","l":"OptionsScreen"},{"p":"pacman","l":"StartScreen"}];updateSearchResults();

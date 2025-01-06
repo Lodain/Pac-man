@@ -4,9 +4,10 @@ import javafx.application.Application;
 import javafx.stage.Stage;
 
 /**
- * @author: Danilo Spera
  * Main application class for the Pacman game.
  * Handles the initialization and navigation between different game screens.
+ * 
+ * @author Danilo Spera
  */
 public class App extends Application {
 

@@ -1,11 +1,16 @@
-10 10
-WWWWWWWWWW
-W........W
-W..P...K.W
-W........W
-W.......GW
-W........W
-W........W
-W......ooW
-W.....oCCW
-WWWWWWWWWW
+15 19
+WWWWWWWWWWWWWWWWWWW
+W.......o.o.......W
+W.WWWWW.WWW.WWWWW.W
+WoW.....P.........W
+W.W.WWW.WWWWW.WW.WW
+W...oC.........Co.W
+W.W.WWW.WW.WW.WW.WW
+WoW.....W...W.....W
+W.WWWWW.W.G.W.WWW.W
+W.......W...W.....W
+W.WWWWW.WWWWW.WWW.W
+WoW.K...........WoW
+W.W.WWW.WWWWW.WWW.W
+W.......o.o..C...KW
+WWWWWWWWWWWWWWWWWWW

@@ -1,6 +1,13 @@
-5 5
-WWWWWW
-WP...W
-W....W
-W...CW
-WWWWWW
+12 17
+WWWWWWWWWWWWWWWWW
+W.....o...o.....W
+W.WWW.WWWWW.WWW.W
+WoW.....P.....WoW
+W.W.WWW.W.WWW.W.W
+W...oC..K..Co...W
+W.W.WWW.G.WWW.W.W
+WoW.....W.....WoW
+W.WWW.WWWWW.WWW.W
+W.....o...o.....W
+W.WWW.WWWWW.WWW.W
+WWWWWWWWWWWWWWWWW

@@ -26,7 +26,6 @@ import pacman.entities.LevelReader;
 import pacman.entities.Movement;
 
 /**
- * @author: Danilo Spera
  * Main game screen where the gameplay occurs.
  * Handles game mechanics:
  * - Player movement and animation
@@ -34,6 +33,8 @@ import pacman.entities.Movement;
  * - Collision detection
  * - Score tracking
  * - Game state (pause, win, lose)
+ *
+ * @author Danilo Spera
  */
 public class LevelScreen {
 
@@ -108,6 +109,14 @@ public class LevelScreen {
 
     /** ImageView for the key icon */
     private ImageView keyImageView;
+
+    /**
+     * Creates a new LevelScreen instance.
+     * Initializes game components and default values.
+     */
+    public LevelScreen() {
+        // Constructor can be empty if all initialization is done in field declarations
+    }
 
     /**
      * Loads and initializes a game level.

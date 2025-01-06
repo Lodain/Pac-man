@@ -20,12 +20,13 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 /**
- * @author: Danilo Spera 
  * Screen for creating custom Pacman game levels.
  * This class provides a visual level editor where users can:
  * - Set level dimensions
  * - Place game elements (walls, points, ghosts, etc.)
  * - Save custom levels to files
+ * 
+ * @author Danilo Spera
  */
 public class CreateLevelScreen {
     /** Size of each tile in pixels */

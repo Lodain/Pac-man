@@ -12,16 +12,25 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 /**
- * @author: Danilo Spera
  * Screen for configuring game options.
- * handles:
+ * Handles:
  * - Game speed adjustment (affects both player and ghost movement)
  * - Speed range from 0.1 (fastest) to 1.0 (slowest)
+ *
+ * @author Danilo Spera
  */
 public class OptionsScreen {
 
     /** Current game speed value (0.1 = fastest, 1.0 = slowest) */
     private double selectedSpeed = 0.3;
+
+    /**
+     * Creates a new OptionsScreen instance.
+     * Initializes default speed settings.
+     */
+    public OptionsScreen() {
+        // Constructor can be empty if all initialization is done in field declarations
+    }
 
     /**
      * Displays the options configuration interface.
