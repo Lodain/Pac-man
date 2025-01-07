@@ -9,7 +9,7 @@
 pacman='C:/Users/danil/Documents/GitHub/Pac-man/pacman/src/main/java'
 -encoding
 'UTF-8'
--protected
+-private
 -source
 '11'
 --module-source-path
@@ -33,17 +33,17 @@ pacman='C:/Users/danil/Documents/GitHub/Pac-man/pacman/src/main/java'
 'pacman 1.0 API'
 pacman
 'C:/Users/danil/Documents/GitHub/Pac-man/pacman/src/main/java/module-info.java'
-C:\Users\danil\Documents\GitHub\Pac-man\pacman\target\site\apidocs\allclasses-index.html = 1736100539797
-C:\Users\danil\Documents\GitHub\Pac-man\pacman\target\site\apidocs\allpackages-index.html = 1736100539802
-C:\Users\danil\Documents\GitHub\Pac-man\pacman\target\site\apidocs\element-list = 1736100539658
-C:\Users\danil\Documents\GitHub\Pac-man\pacman\target\site\apidocs\help-doc.html = 1736100539861
-C:\Users\danil\Documents\GitHub\Pac-man\pacman\target\site\apidocs\index-all.html = 1736100539834
-C:\Users\danil\Documents\GitHub\Pac-man\pacman\target\site\apidocs\index.html = 1736100539845
-C:\Users\danil\Documents\GitHub\Pac-man\pacman\target\site\apidocs\javadoc.bat = 1736100498359
-C:\Users\danil\Documents\GitHub\Pac-man\pacman\target\site\apidocs\member-search-index.js = 1736100539813
-C:\Users\danil\Documents\GitHub\Pac-man\pacman\target\site\apidocs\module-search-index.js = 1736100539807
-C:\Users\danil\Documents\GitHub\Pac-man\pacman\target\site\apidocs\overview-tree.html = 1736100539771
-C:\Users\danil\Documents\GitHub\Pac-man\pacman\target\site\apidocs\package-search-index.js = 1736100539809
-C:\Users\danil\Documents\GitHub\Pac-man\pacman\target\site\apidocs\search.html = 1736100539840
-C:\Users\danil\Documents\GitHub\Pac-man\pacman\target\site\apidocs\tag-search-index.js = 1736100539816
-C:\Users\danil\Documents\GitHub\Pac-man\pacman\target\site\apidocs\type-search-index.js = 1736100539811
+C:\Users\danil\Documents\GitHub\Pac-man\pacman\target\site\apidocs\allclasses-index.html = 1736208783076
+C:\Users\danil\Documents\GitHub\Pac-man\pacman\target\site\apidocs\allpackages-index.html = 1736208783079
+C:\Users\danil\Documents\GitHub\Pac-man\pacman\target\site\apidocs\constant-values.html = 1736208783012
+C:\Users\danil\Documents\GitHub\Pac-man\pacman\target\site\apidocs\element-list = 1736208782868
+C:\Users\danil\Documents\GitHub\Pac-man\pacman\target\site\apidocs\help-doc.html = 1736208783120
+C:\Users\danil\Documents\GitHub\Pac-man\pacman\target\site\apidocs\index-all.html = 1736208783106
+C:\Users\danil\Documents\GitHub\Pac-man\pacman\target\site\apidocs\index.html = 1736208783111
+C:\Users\danil\Documents\GitHub\Pac-man\pacman\target\site\apidocs\member-search-index.js = 1736208783084
+C:\Users\danil\Documents\GitHub\Pac-man\pacman\target\site\apidocs\module-search-index.js = 1736208783080
+C:\Users\danil\Documents\GitHub\Pac-man\pacman\target\site\apidocs\overview-tree.html = 1736208783062
+C:\Users\danil\Documents\GitHub\Pac-man\pacman\target\site\apidocs\package-search-index.js = 1736208783082
+C:\Users\danil\Documents\GitHub\Pac-man\pacman\target\site\apidocs\search.html = 1736208783108
+C:\Users\danil\Documents\GitHub\Pac-man\pacman\target\site\apidocs\tag-search-index.js = 1736208783085
+C:\Users\danil\Documents\GitHub\Pac-man\pacman\target\site\apidocs\type-search-index.js = 1736208783083
